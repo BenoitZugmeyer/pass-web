@@ -20,7 +20,9 @@ const runIterator = (iterator) =>
         return;
       }
 
-      const promise = Array.isArray(ret.value) ? Promise.all(ret.value) : Promise.resolve(ret.value);
+      const promise = Array.isArray(ret.value) ?
+        Promise.all(ret.value) :
+        Promise.resolve(ret.value);
       promise.then(
         (value) => iterate(true, value),
         (error) => iterate(false, error)
