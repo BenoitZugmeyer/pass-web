@@ -1,0 +1,27 @@
+extends: eslint:recommended
+
+rules:
+  comma-dangle: [1, "always-multiline"]
+  no-constant-condition: 0
+  curly: [1, "multi-line"]
+  no-console: 0
+
+env:
+    node: true
+
+ecmaFeatures:
+    arrowFunctions: true
+    blockBindings: true
+    modules: true
+    destructuring: true
+    forOf: true
+    objectLiteralComputedProperties: true
+    objectLiteralShorthandMethods: true
+    objectLiteralShorthandProperties: true
+    templateStrings: true
+    spread: true
+    restParams: true
+    classes: true
+    generators: true
+
+# vim: ft=yaml

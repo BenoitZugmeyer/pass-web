@@ -1,0 +1,17 @@
+{
+  "name": "pass-web",
+  "version": "1.0.0-dev",
+  "description": "A web interface for pass / passwordstore",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Benoît Zugmeyer",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "gpg": "^0.4.0",
+    "minimist": "^1.2.0"
+  }
+}
