@@ -2,7 +2,7 @@
   "name": "pass-web",
   "version": "1.0.0-dev",
   "description": "A web interface for pass / passwordstore",
-  "main": "index.js",
+  "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

@@ -96,7 +96,7 @@ function apiRouter(conf) {
 function launchApp(conf) {
   const app = express();
 
-  app.use(express.static("dist"));
+  app.use(express.static(path.join(__dirname, "..", "dist")));
   app.use("/api", apiRouter(conf));
 
   app.listen(3000, "localhost", function () {
