@@ -1,8 +1,5 @@
 "use strict";
 
-const castPromise = (object) =>
-  object && typeof object.then === "function" ? object : Promise.resolve(object);
-
 const runIterator = (iterator) =>
   new Promise((resolve, reject) => {
     const iterate = (next, value) => {
@@ -65,5 +62,4 @@ module.exports = {
   wrapCPS,
   run,
   wrapRun,
-  castPromise,
 };
