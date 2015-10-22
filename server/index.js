@@ -63,6 +63,8 @@ const auth = PromiseUtil.wrapRun(function* (conf, passphrase) {
   if (!(yield conf.keys.verify(gpgId, passphrase))) {
     throw new AuthError(`Bad passphrase`);
   }
+
+  return gpgId;
 });
 
 function apiRouter(conf) {
@@ -94,12 +96,25 @@ function apiRouter(conf) {
   router.use(wrap(function* (req, res, next) {
     if (!req.body) throw new InvalidParameter("No request body");
     if (!req.body.passphrase) throw new InvalidParameter("No passphrase");
-    yield auth(conf, req.body.passphrase);
+    req.gpgId = yield auth(conf, req.body.passphrase);
     next();
   }));
 
   router.post("/list", wrap(function* (req, res) {
     res.json(yield listDirectory(conf.passwordStorePath, filterFiles));
+  }));
+
+  router.post("/get", wrap(function* (req, res) {
+    if (!Array.isArray(req.body.path)) throw new InvalidParameter("path is required");
+    if (req.body.path.some((p) => typeof p !== "string" || p.startsWith(".") || !p)) {
+      throw new InvalidParameter("Invalid path parameter");
+    }
+    const filePath = path.resolve(conf.passwordStorePath,
+                                  path.join.apply(path.join, req.body.path));
+    const rawContent = yield fileRead(filePath);
+    const content = yield conf.keys.decrypt(req.gpgId, rawContent)
+    if (!content.length) throw new Error("Empty file");
+    res.json(content[0].toString());
   }));
 
   return router;

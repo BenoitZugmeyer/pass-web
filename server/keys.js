@@ -7,6 +7,7 @@ const PromiseUtil = require("./promise-util");
 
 const importFromArmoredPGP = PromiseUtil.wrapCPS(kbpgp.KeyManager.import_from_armored_pgp);
 const fileRead = PromiseUtil.wrapCPS(fs.readFile);
+const unbox = PromiseUtil.wrapCPS(kbpgp.unbox);
 
 class KeyError extends Error {}
 
@@ -25,9 +26,7 @@ module.exports = class Keys {
   }
 
   verify(id, passphrase) {
-    if (!this.has(id)) return Promise.reject(new KeyError(`Key ${id} not found`));
-
-    const key = this._keys.get(id);
+    const key = this._get(id);
 
     return (
       PromiseUtil.wrapCPS(key.unlock_pgp.bind(key))({ passphrase })
@@ -35,7 +34,22 @@ module.exports = class Keys {
     );
   }
 
-  get(id) {
+  decrypt(id, content) {
+    const key = this._get(id);
+
+    return unbox({
+      raw: content,
+      msg_type: kbpgp.const.openpgp.message_types.generic,
+      keyfetch: {
+        fetch(ids, opts, cb) {
+          cb(null, key, 0);
+        },
+      },
+    });
+  }
+
+  _get(id) {
+    if (!this.has(id)) return Promise.reject(new KeyError(`Key ${id} not found`));
     return this._keys.get(id);
   }
 
