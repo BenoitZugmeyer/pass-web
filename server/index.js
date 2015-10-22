@@ -85,6 +85,7 @@ function apiRouter(conf) {
         yield* gen(req, res, next);
       }
       catch (error) {
+        if (conf.debug) console.log(error.stack);
         sendError(res, error);
       }
     });
@@ -121,6 +122,7 @@ const args = parseArgs(process.argv, {
     debug: [ "d" ],
     store: [ "s" ],
   },
+  boolean: [ "debug" ],
 });
 
 PromiseUtil.run(function* () {
