@@ -26,7 +26,6 @@ let config = {
     loaders: [
       {
         test: /\.js$/,
-        exclude: /node_modules|src\/data\.js/,
         loader: "babel",
         query: {
           stage: 0,
