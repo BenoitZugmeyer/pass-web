@@ -36,8 +36,10 @@ const wrapRun = (generator) =>
     return runIterator(generator.apply(this, arguments));
   };
 
-const wrapCPS = (fn, options) =>
-  function () {
+const wrapCPS = (fn, options) => {
+  if (typeof fn !== "function") throw new Error("fn is not a function");
+
+  return function () {
     const args = Array.from(arguments);
     return new Promise((resolve, reject) => {
       args.push(function () {
@@ -57,6 +59,7 @@ const wrapCPS = (fn, options) =>
       fn.apply(null, args);
     });
   };
+};
 
 module.exports = {
   wrapCPS,

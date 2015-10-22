@@ -12,6 +12,7 @@
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "gpg": "^0.4.0",
+    "kbpgp": "^2.0.48",
     "minimist": "^1.2.0"
   },
   "devDependencies": {

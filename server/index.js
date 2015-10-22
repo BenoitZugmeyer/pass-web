@@ -5,22 +5,14 @@ const path = require("path");
 const express = require("express");
 const parseArgs = require("minimist");
 const bodyParser = require("body-parser");
-const gpg = require("gpg");
 const PromiseUtil = require("./promise-util");
+const Keys = require("./keys");
 const fileStat = PromiseUtil.wrapCPS(fs.stat);
 const fileRead = PromiseUtil.wrapCPS(fs.readFile);
 const directoryRead = PromiseUtil.wrapCPS(fs.readdir);
-const clearsign = PromiseUtil.wrapCPS(gpg.clearsign);
 
 class InvalidParameter extends Error {}
-class GPGError extends Error {
-  constructor(error) {
-    const message = error.message
-    .replace(/^gpg:\s*/, "")
-.replace(/\n.*/g, "");
-super(message);
-  }
-}
+class AuthError extends Error {}
 
 const listDirectory = PromiseUtil.wrapRun(function* (root, filter) {
   const files = yield directoryRead(root);
@@ -45,12 +37,31 @@ function filterFiles(name, stat) {
   return (stat.isDirectory() && name !== ".git") || name.endsWith(".gpg");
 }
 
-const auth = PromiseUtil.wrapRun(function* (conf, passphrase) {
-  try {
-    yield clearsign("foo", ["--pinentry-mode", "loopback", "--passphrase", passphrase, "--quiet", "--local-user", conf.gpgId]);
+const getGPGId = PromiseUtil.wrapRun(function* (rootPath) {
+  const stat = yield fileStat(rootPath);
+
+  if (stat.isDirectory()) {
+    const gpgIdPath = path.resolve(rootPath, ".gpg-id");
+    const gpgStat = yield fileStat(gpgIdPath);
+    if (gpgStat.isFile()) {
+      return (yield fileRead(gpgIdPath, { encoding: "utf-8" })).trim();
+    }
   }
-  catch (e) {
-    throw new GPGError(e);
+
+  const parentPath = path.resolve(rootPath, "..");
+  if (rootPath === parentPath) throw new Error("No .gpg-id found");
+
+  return getGPGId(parentPath);
+});
+
+const auth = PromiseUtil.wrapRun(function* (conf, passphrase) {
+  const gpgId = yield getGPGId(conf.passwordStorePath);
+  if (!conf.keys.has(gpgId)) {
+    throw new AuthError(`Unknown secret key ${JSON.stringify(gpgId)}`);
+  }
+
+  if (!(yield conf.keys.verify(gpgId, passphrase))) {
+    throw new AuthError(`Bad passphrase`);
   }
 });
 
@@ -117,12 +128,13 @@ PromiseUtil.run(function* () {
   const passwordStoreStat = yield fileStat(passwordStorePath);
   if (!passwordStoreStat.isDirectory()) throw new Error(`${passwordStorePath} is not a directory`);
 
-  const gpgId = yield fileRead(path.join(passwordStorePath, ".gpg-id"), { encoding: "utf-8" });
+  const keys = new Keys();
+  yield args._.slice(2).map((key) => keys.addFromFile(key));
 
   launchApp({
     debug: args.debug,
     passwordStorePath,
-    gpgId: gpgId.trim(),
+    keys,
   });
 })
 .catch((e) => console.log(args.debug ? e.stack : e.message));
