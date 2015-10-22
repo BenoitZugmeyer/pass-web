@@ -7,6 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "postinstall": "NODE_ENV=production webpack"
   },
+  "bin": {
+    "pass-web": "server/index.js"
+  },
   "author": "Benoît Zugmeyer",
   "license": "MIT",
   "dependencies": {
@@ -14,12 +17,14 @@
     "express": "^4.13.3",
     "gpg": "^0.4.0",
     "kbpgp": "^2.0.48",
-    "minimist": "^1.2.0"
-  },
-  "devDependencies": {
+    "minimist": "^1.2.0",
+    "mithril": "^0.2.0",
+
     "babel": "^5.8.23",
     "babel-loader": "^5.3.2",
     "html-webpack-plugin": "^1.6.2",
     "webpack": "^1.12.2"
+  },
+  "devDependencies": {
   }
 }
