@@ -1,3 +1,5 @@
+parser: babel-eslint
+
 extends: eslint:recommended
 
 rules:
@@ -8,20 +10,5 @@ rules:
 
 env:
     node: true
-
-ecmaFeatures:
-    arrowFunctions: true
-    blockBindings: true
-    modules: true
-    destructuring: true
-    forOf: true
-    objectLiteralComputedProperties: true
-    objectLiteralShorthandMethods: true
-    objectLiteralShorthandProperties: true
-    templateStrings: true
-    spread: true
-    restParams: true
-    classes: true
-    generators: true
 
 # vim: ft=yaml
