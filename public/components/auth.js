@@ -1,11 +1,8 @@
 "use strict";
 var m = require("mithril");
-function stop(fn) {
-  return (...args) => {
-    if (args[0] instanceof Event) args.shift().preventDefault();
-    fn(...args);
-  }
-}
+var Component = require("../component");
+var Actions = require("../actions");
+var DomUtil = require("../dom-util");
 
 var pu = {
 
@@ -28,47 +25,37 @@ var pu = {
 
 }
 
-class Controller {
+module.exports = class Auth extends Component {
 
-  constructor(options) {
+  constructor() {
+    super();
     this.passphrase = m.prop("");
     this.error = m.prop();
     this.loading = m.prop(false);
-    this.onAuth = options && options.onAuth || () => {};
   }
 
   submit() {
-    console.log("submit");
     this.loading(true);
-    m.redraw();
-    m.request({ method: "POST", url: "/api/list", data: { passphrase: this.passphrase() } })
-    ::pu.finally(() => this.loading(false))
-    .then((result) => {
-      if (result.error) { throw new Error(result.error.message); }
-      this.onAuth();
-    })
-    ::pu.catch(this.error);
+    Actions.signin(this.passphrase())
+      ::pu.finally(() => this.loading(false))
+      ::pu.catch(this.error);
   }
 
   render() {
-    console.log(this.loading());
     return (
-      m("form", { onsubmit: stop(::this.submit) }, [
+      m("form", { onsubmit: DomUtil.stop(::this.submit) }, [
+
         this.error() && m("div", "Error: ", this.error().message),
+
         m("input", {
           type: "password",
           onchange: m.withAttr("value", this.passphrase),
           value: this.passphrase(),
         }),
+
         m("button", { disabled: this.loading() }, "Login"),
+
       ])
     );
   }
 }
-
-module.exports = {
-  controller: Controller,
-  view(controller) {
-    return controller.render();
-  },
-};
