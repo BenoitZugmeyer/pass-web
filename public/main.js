@@ -1,5 +1,5 @@
-var m = require("mithril");
-var App = require("./components/app");
+import m from "mithril";
+import App from "./components/app";
 
 document.body.style.margin = 0;
 document.body.style.fontFamily = "Helvetica, Arial, sans-serif";

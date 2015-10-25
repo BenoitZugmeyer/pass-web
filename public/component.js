@@ -9,7 +9,7 @@ function cleanupFalsy(root) {
   return root;
 }
 
-module.exports = class Component {
+export default class Component {
 
   static get controller() {
     Object.defineProperty(this, "controller", {
@@ -29,4 +29,4 @@ module.exports = class Component {
     return this.view;
   }
 
-};
+}

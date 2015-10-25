@@ -1,10 +1,10 @@
-var m = require("mithril");
-var Auth = require("./auth");
-var Component = require("../component");
-var Store = require("../store");
-var List = require("./list");
+import m from "mithril";
+import Auth from "./auth";
+import Component from "../component";
+import Store from "../store";
+import List from "./list";
 
-module.exports = class App extends Component {
+export default class App extends Component {
 
   render() {
     return (
@@ -20,4 +20,4 @@ module.exports = class App extends Component {
     );
   }
 
-};
+}

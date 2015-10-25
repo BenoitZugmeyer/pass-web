@@ -1,4 +1,4 @@
-var m = require("mithril");
+import m from "mithril";
 
 function emit() {
   m.redraw();
@@ -7,7 +7,7 @@ function emit() {
 var list = false;
 var passphrase = false;
 
-module.exports = {
+export default {
 
   setList(list_) {
     list = list_;

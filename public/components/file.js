@@ -1,9 +1,9 @@
-var m = require("mithril");
-var Component = require("../component");
-var FileContent = require("./file-content");
-var DomUtil = require("../dom-util");
+import m from "mithril";
+import Component from "../component";
+import FileContent from "./file-content";
+import { stop } from "../dom-util";
 
-module.exports = class File extends Component {
+export default class File extends Component {
 
   constructor({ file, parentPath }) {
     super();
@@ -27,7 +27,7 @@ module.exports = class File extends Component {
         m("div",
           {
             onclick: ::this.toggle,
-            onmousedown: DomUtil.stop(),
+            onmousedown: stop(),
             style: Object.assign({
               cursor: "pointer",
               padding: "4px 5px",
@@ -43,4 +43,4 @@ module.exports = class File extends Component {
     );
   }
 
-};
+}

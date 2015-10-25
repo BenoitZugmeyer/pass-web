@@ -1,11 +1,11 @@
-var m = require("mithril");
-var Component = require("../component");
-var Store = require("../store");
-var Actions = require("../actions");
-var DomUtil = require("../dom-util");
-var Directory = require("./directory");
+import m from "mithril";
+import Component from "../component";
+import Store from "../store";
+import { logout } from "../actions";
+import { stop } from "../dom-util";
+import Directory from "./directory";
 
-module.exports = class List extends Component {
+export default class List extends Component {
 
   render() {
     return (
@@ -14,7 +14,7 @@ module.exports = class List extends Component {
           style: { textAlign: "right" },
         }, [
           m("button", {
-            onclick: DomUtil.stop(Actions.logout),
+            onclick: stop(logout),
             style: {
               verticalAlign: "middle",
             },
@@ -25,5 +25,4 @@ module.exports = class List extends Component {
     );
   }
 
-};
-
+}

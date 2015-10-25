@@ -1,5 +1,5 @@
-var m = require("mithril");
-var store = require("./store");
+import m from "mithril";
+import store from "./store";
 
 function call(route, data) {
   m.redraw();
@@ -12,21 +12,17 @@ function call(route, data) {
   });
 }
 
-module.exports = {
+export function signin(passphrase) {
+  return call("list", { passphrase }).then((list) => {
+    store.setList(list);
+    store.setPassphrase(passphrase);
+  });
+}
 
-  signin(passphrase) {
-    return call("list", { passphrase }).then((list) => {
-      store.setList(list);
-      store.setPassphrase(passphrase);
-    });
-  },
+export function get(path) {
+  return call("get", { passphrase: store.passphrase, path });
+}
 
-  get(path) {
-    return call("get", { passphrase: store.passphrase, path });
-  },
-
-  logout() {
-    store.setList();
-  },
-
-};
+export function logout() {
+  store.setList();
+}

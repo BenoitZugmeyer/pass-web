@@ -1,8 +1,7 @@
-var m = require("mithril");
-var Component = require("../component");
-var File = require("./file");
-var Actions = require("../actions");
-var DomUtil = require("../dom-util");
+import m from "mithril";
+import Component from "../component";
+import File from "./file";
+import { stop } from "../dom-util";
 
 var colors = [
   "27AE60",
@@ -11,7 +10,7 @@ var colors = [
   "C0392B",
 ];
 
-module.exports = class Directory extends Component {
+export default class Directory extends Component {
 
   constructor({ file, parentPath }) {
     super();
@@ -37,7 +36,7 @@ module.exports = class Directory extends Component {
           this.path.length && m("div",
             {
               onclick: ::this.toggle,
-              onmousedown: DomUtil.stop(),
+              onmousedown: stop(),
               style: Object.assign({
                 cursor: "pointer",
                 padding: "4px 5px",
@@ -64,6 +63,4 @@ module.exports = class Directory extends Component {
     );
   }
 
-};
-
-
+}

@@ -1,15 +1,15 @@
-var m = require("mithril");
-var Actions = require("../actions");
-var Component = require("../component");
-var DomUtil = require("../dom-util");
+import m from "mithril";
+import { get } from "../actions";
+import Component from "../component";
+import { stop } from "../dom-util";
 
-module.exports = class FileContent extends Component {
+export default class FileContent extends Component {
 
   constructor({ path }) {
     super();
     this.content = m.prop("");
     this.error = m.prop(false);
-    Actions.get(path)
+    get(path)
     .then(this.content, this.error);
   }
 
@@ -70,7 +70,7 @@ module.exports = class FileContent extends Component {
                 style: {
                   marginLeft: "5px",
                 },
-                onclick: DomUtil.stop(::this.copy),
+                onclick: stop(::this.copy),
               }, "copy"),
             ]),
             rest,
@@ -79,5 +79,4 @@ module.exports = class FileContent extends Component {
     );
   }
 
-};
-
+}

@@ -1,8 +1,9 @@
 "use strict";
-var m = require("mithril");
-var Component = require("../component");
-var Actions = require("../actions");
-var DomUtil = require("../dom-util");
+
+import m from "mithril";
+import Component from "../component";
+import { signin } from "../actions";
+import { stop } from "../dom-util";
 
 var pu = {
 
@@ -25,7 +26,7 @@ var pu = {
 
 }
 
-module.exports = class Auth extends Component {
+export default class Auth extends Component {
 
   constructor() {
     super();
@@ -36,14 +37,14 @@ module.exports = class Auth extends Component {
 
   submit() {
     this.loading(true);
-    Actions.signin(this.passphrase())
+    signin(this.passphrase())
       ::pu.finally(() => this.loading(false))
       ::pu.catch(this.error);
   }
 
   render() {
     return (
-      m("form", { onsubmit: DomUtil.stop(::this.submit) }, [
+      m("form", { onsubmit: stop(::this.submit) }, [
 
         this.error() && m("div", "Error: ", this.error().message),
 
