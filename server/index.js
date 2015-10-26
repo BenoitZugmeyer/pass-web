@@ -8,9 +8,11 @@ const parseArgs = require("minimist");
 const bodyParser = require("body-parser");
 const PromiseUtil = require("./promise-util");
 const Keys = require("./keys");
+const log = require("./log");
 const fileStat = PromiseUtil.wrapCPS(fs.stat);
 const fileRead = PromiseUtil.wrapCPS(fs.readFile);
 const directoryRead = PromiseUtil.wrapCPS(fs.readdir);
+const realpath = PromiseUtil.wrapCPS(fs.realpath);
 
 class InvalidParameter extends Error {}
 class AuthError extends Error {}
@@ -34,8 +36,30 @@ const listDirectory = PromiseUtil.wrapRun(function* (root, filter) {
   return result.filter((file) => file);
 });
 
+
+function validDirectoryName(name) {
+  return !name.startsWith(".");
+}
+
+function validFileName(name) {
+  return !name.startsWith(".") && name.endsWith(".gpg");
+}
+
+function validFilePath(filePath) {
+  const splitted = filePath.split(path.sep);
+  return Boolean(
+    splitted.length &&
+    splitted.slice(0, -1).every(validDirectoryName) &&
+    validFileName(splitted[splitted.length - 1])
+  );
+}
+
 function filterFiles(name, stat) {
-  return (stat.isDirectory() && name !== ".git") || name.endsWith(".gpg");
+  return (
+    stat.isDirectory() ? validDirectoryName(name) :
+    stat.isFile() ? validFileName(name) :
+      false
+  );
 }
 
 const getGPGId = PromiseUtil.wrapRun(function* (rootPath) {
@@ -55,11 +79,8 @@ const getGPGId = PromiseUtil.wrapRun(function* (rootPath) {
   return getGPGId(parentPath);
 });
 
-const auth = PromiseUtil.wrapRun(function* (conf, passphrase) {
-  const gpgId = yield getGPGId(conf.passwordStorePath);
-  if (!conf.keys.has(gpgId)) {
-    throw new AuthError(`Unknown secret key ${JSON.stringify(gpgId)}`);
-  }
+const auth = PromiseUtil.wrapRun(function* (conf, requestPath, passphrase) {
+  const gpgId = yield getGPGId(requestPath || conf.passwordStorePath);
 
   if (!(yield conf.keys.verify(gpgId, passphrase))) {
     throw new AuthError(`Bad passphrase`);
@@ -88,33 +109,56 @@ function apiRouter(conf) {
         yield* gen(req, res, next);
       }
       catch (error) {
-        if (conf.debug) console.log(error.stack);
+        log.debug(error);
         sendError(res, error);
       }
     });
   }
 
+  const getSecurePath = PromiseUtil.wrapRun(function* (requestPath) {
+    try {
+      if (!Array.isArray(requestPath)) return;
+      if (requestPath.some((p) => typeof p !== "string")) return;
+
+      const filePath = yield realpath(path.resolve(
+        conf.passwordStorePath,
+        path.join.apply(path.join, requestPath)
+      ));
+
+      // Make sure the path is inside passwordStorePath and isn't in a dotted directory/file
+      if (validFilePath(path.relative(conf.passwordStorePath, filePath))) return filePath;
+    }
+    catch (e) {
+      log.debug(e);
+    }
+  });
+
   router.use(wrap(function* (req, res, next) {
     if (!req.body) throw new InvalidParameter("No request body");
     if (!req.body.passphrase) throw new InvalidParameter("No passphrase");
-    req.gpgId = yield auth(conf, req.body.passphrase);
+    req.auth = (requestPath) => auth(conf, requestPath, req.body.passphrase);
     next();
   }));
 
   router.post("/list", wrap(function* (req, res) {
+    yield req.auth();
     res.json(yield listDirectory(conf.passwordStorePath, filterFiles));
   }));
 
   router.post("/get", wrap(function* (req, res) {
-    if (!Array.isArray(req.body.path)) throw new InvalidParameter("path is required");
-    if (req.body.path.some((p) => typeof p !== "string" || p.startsWith(".") || !p)) {
-      throw new InvalidParameter("Invalid path parameter");
-    }
-    const filePath = path.resolve(conf.passwordStorePath,
-                                  path.join.apply(path.join, req.body.path));
+
+    const filePath = yield getSecurePath(req.body.path);
+
+    // Always authenticate. We shouldn't throw any exception related to the file path before
+    // authentication, as it could be a privacy leak (= an attacker could craft queries to check if
+    // a file exists)
+    yield req.auth(filePath);
+
+    if (!filePath) throw new InvalidParameter("Invalid path parameter");
+
     const rawContent = yield fileRead(filePath);
-    const content = yield conf.keys.decrypt(req.gpgId, rawContent)
-    if (!content.length) throw new Error("Empty file");
+    const content = yield conf.keys.decrypt(rawContent, req.body.passphrase);
+    if (!content.length) throw new Error("The file seems empty");
     res.json(content[0].toString());
   }));
 
@@ -129,7 +173,7 @@ function launchApp(conf) {
 
   app.listen(3000, "localhost", function () {
     const address = this.address();
-    console.log(`Server listening on http://${address.address}:${address.port}`);
+    log.info`Server listening on http://${address.address}:${address.port}`;
   });
 }
 
@@ -142,17 +186,18 @@ const args = parseArgs(process.argv, {
 });
 
 PromiseUtil.run(function* () {
-  const passwordStorePath = args.store || path.join(process.env.HOME, ".password-store");
+  const passwordStorePath = yield realpath(args.store || path.join(process.env.HOME, ".password-store"));
   const passwordStoreStat = yield fileStat(passwordStorePath);
   if (!passwordStoreStat.isDirectory()) throw new Error(`${passwordStorePath} is not a directory`);
 
   const keys = new Keys();
   yield args._.slice(2).map((key) => keys.addFromFile(key));
 
+  log.setLevel(args.debug ? log.DEBUG : log.INFO);
+
   launchApp({
-    debug: args.debug,
     passwordStorePath,
     keys,
   });
 })
-.catch((e) => console.log(args.debug ? e.stack : e.message));
+.catch(log.error);
