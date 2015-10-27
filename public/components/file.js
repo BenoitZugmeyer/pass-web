@@ -5,6 +5,22 @@ import { stop } from "../dom-util";
 
 export default class File extends Component {
 
+  static styles = {
+
+    name: {
+      cursor: "pointer",
+      padding: "4px 5px",
+    },
+
+    nameOpen: {
+      inherit: "name",
+
+      backgroundColor: "#BDC3C7",
+      fontWeight: "bold",
+    },
+
+  };
+
   constructor({ file, parentPath }) {
     super();
     this.file = file;
@@ -28,13 +44,7 @@ export default class File extends Component {
           {
             onclick: ::this.toggle,
             onmousedown: stop(),
-            style: Object.assign({
-              cursor: "pointer",
-              padding: "4px 5px",
-            }, this.open() && {
-              backgroundColor: "#BDC3C7",
-              fontWeight: "bold",
-            }),
+            ss: this.open() ? "nameOpen" : "name",
           },
           name
         ),

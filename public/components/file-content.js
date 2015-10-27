@@ -5,6 +5,37 @@ import { stop } from "../dom-util";
 
 export default class FileContent extends Component {
 
+  static styles = {
+    root: {
+      margin: "0 0 0 5px",
+      overflow: "hidden",
+      backgroundColor: "#BDC3C7",
+      marginBottom: "5px",
+    },
+    wrapper: {
+      padding: "4px 5px",
+    },
+    error: {
+      color: "#C0392B",
+      fontWeight: "bold",
+    },
+
+    firstLine: {
+      backgroundColor: "#2C3E50",
+      color: "#2C3E50",
+      display: "inline-block",
+      ":selection": {
+        color: "#0A60C9",
+        // Chrome forces a semi-transparent background, this is a workaround
+        backgroundColor: "rgba(10, 96, 201, 0.99)",
+      },
+    },
+
+    button: {
+      marginLeft: "5px",
+    },
+  };
+
   constructor({ path }) {
     super();
     this.content = m.prop("");
@@ -36,40 +67,17 @@ export default class FileContent extends Component {
     var rest = lines.slice(1).join("\n");
 
     return (
-      m("div", {
-        style: {
-          margin: "0 0 0 5px",
-          overflow: "hidden",
-          backgroundColor: "#BDC3C7",
-          marginBottom: "5px",
-        },
-      }, [
-        m("div", {
-          style: {
-            padding: "4px 5px",
-          },
-        }, [
+      m("div", { ss: "root" }, [
+        m("div", { ss: "wrapper" }, [
           this.error() ?
-            m("div", {
-              style: {
-                color: "#C0392B",
-                fontWeight: "bold",
-              },
-            }, "Error: ", this.error().message) :
+            m("div", { ss: "error" }, "Error: ", this.error().message) :
             m("div", [
               m("span", {
-                style: {
-                  backgroundColor: "#2C3E50",
-                  color: "#2C3E50",
-                  textShadow: "0 0 10px #2C3E50",
-                  display: "inline-block",
-                },
+                ss: "firstLine",
                 config: (element) => { this.firstLineElement = element; },
               }, firstLine),
               m("button", {
-                style: {
-                  marginLeft: "5px",
-                },
+                ss: "button",
                 onclick: stop(::this.copy),
               }, "copy"),
             ]),
