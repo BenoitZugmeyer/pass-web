@@ -19,6 +19,8 @@ function keyId(key) {
   else if (key.get_pgp_key_id) fullKey = key.get_pgp_key_id().toString("hex");
   else throw new KeyError("Invalid key id type");
 
+  if (!/^[0-9a-f]*$/i.test(fullKey)) throw new KeyError(`Invalid key id value ${fullKey}`);
+
   return fullKey.slice(-8).toLowerCase();
 }
 
