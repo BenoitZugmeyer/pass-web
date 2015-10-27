@@ -6,7 +6,7 @@ const names = new Map();
 function iterate(root, fn) {
   if (root.children) {
     root.children.forEach((child, i, children) => {
-      iterate(child, fn);
+      if (child) iterate(child, fn);
       fn(child, i, children);
     });
   }
