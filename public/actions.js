@@ -3,7 +3,7 @@ import store from "./store";
 
 function call(route, data) {
   m.redraw();
-  return m.request({ method: "POST", url: "/api/" + route, data })
+  return m.request({ method: "POST", url: "api/" + route, data })
   .then((response) => {
     if (response.error) {
       throw Object.assign(new Error(response.error.message), response.error);
