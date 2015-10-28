@@ -32,6 +32,8 @@ export default class FileContent extends Component {
     },
 
     button: {
+      inherit: "button",
+
       marginLeft: "5px",
     },
   };

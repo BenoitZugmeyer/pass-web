@@ -8,11 +8,16 @@ export default class App extends Component {
 
   static styles = {
     root: {
+      display: "flex",
+      position: "relative",
+      boxSizing: "border-box",
+
+      minHeight: "100vh",
       maxWidth: "40em",
       margin: "auto",
-      position: "relative",
-      backgroundColor: "#ECF0F1",
       padding: "10px",
+
+      backgroundColor: "#ECF0F1",
     },
   };
 

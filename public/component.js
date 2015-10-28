@@ -14,6 +14,36 @@ function iterate(root, fn) {
 
 export default class Component {
 
+  static styles = {
+    input: {
+      font: "inherit",
+      padding: "6px 12px",
+      borderRadius: "4px",
+      border: "1px solid transparent",
+      outline: 0,
+    },
+
+    textField: {
+      inherit: "input",
+
+      borderColor: "#BDC3C7",
+      backgroundColor: "#fff",
+    },
+
+    button: {
+      inherit: "input",
+
+      color: "#fff",
+      borderColor: "#16A085",
+      backgroundColor: "#16A085",
+      cursor: "pointer",
+
+      hover: {
+        backgroundColor: "#1ABC9C",
+      },
+    },
+  };
+
   static get sansSelNS() {
     if (this.hasOwnProperty("_sansSelNS")) return this._sansSelNS;
 

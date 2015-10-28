@@ -8,17 +8,17 @@ import Directory from "./directory";
 export default class List extends Component {
 
   static styles = {
+    root: {
+      flex: "1",
+    },
     header: {
       textAlign: "right",
-    },
-    button: {
-      verticalAlign: "middle",
     },
   };
 
   render() {
     return (
-      m("div", [
+      m("div", { ss: "root" }, [
         m("div", { ss: "header" }, [
           m("button", {
             onclick: stop(logout),

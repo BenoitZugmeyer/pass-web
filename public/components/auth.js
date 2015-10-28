@@ -28,6 +28,21 @@ var pu = {
 
 export default class Auth extends Component {
 
+  static styles = {
+
+    root: {
+      alignSelf: "center",
+      flex: "1",
+      textAlign: "center",
+    },
+
+    textField: {
+      inherit: "textField",
+      marginRight: "10px",
+    },
+
+  };
+
   constructor() {
     super();
     this.passphrase = m.prop("");
@@ -44,17 +59,18 @@ export default class Auth extends Component {
 
   render() {
     return (
-      m("form", { onsubmit: stop(::this.submit) }, [
+      m("form", { ss: "root", onsubmit: stop(::this.submit) }, [
 
         this.error() && m("div", "Error: ", this.error().message),
 
         m("input", {
+          ss: "textField",
           type: "password",
           onchange: m.withAttr("value", this.passphrase),
           value: this.passphrase(),
         }),
 
-        m("button", { disabled: this.loading() }, "Login"),
+        m("button", { ss: "button", disabled: this.loading() }, "Login"),
 
       ])
     );
