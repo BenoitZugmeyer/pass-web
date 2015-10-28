@@ -208,7 +208,7 @@ PromiseUtil.run(function* () {
   launchApp({
     passwordStorePath,
     keys,
-    port: args.port,
+    port: args.port || 3000,
   });
 })
 .catch(log.error);
