@@ -9,6 +9,8 @@ const getPath = (fullPath) => {
   return path.resolve.apply(null, args);
 };
 
+const svgoConfig = {};
+
 let config = {
   context: getPath("public"),
   entry: [ "./main" ],
@@ -32,6 +34,13 @@ let config = {
           cacheDirectory: true,
           loose: true,
         },
+      },
+      {
+        test: /\.svg$/,
+        loaders: [
+          "file-loader?name=[path][name].[ext]?[hash]",
+          "svgo-loader?" + JSON.stringify(svgoConfig),
+        ],
       },
     ],
   },

@@ -22,10 +22,12 @@
 
     "babel": "^5.8.23",
     "babel-loader": "^5.3.2",
+    "file-loader": "^0.8.4",
     "html-webpack-plugin": "^1.6.2",
     "sans-sel": "git+https://github.com/BenoitZugmeyer/sans-sel.git#master",
+    "svgo": "^0.5.6",
+    "svgo-loader": "^1.1.0",
     "webpack": "^1.12.2"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

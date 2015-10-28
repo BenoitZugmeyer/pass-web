@@ -1,6 +1,7 @@
 import m from "mithril";
 import Component from "../component";
 import File from "./file";
+import Icon from "./icon";
 import { stop } from "../dom-util";
 
 var colors = [
@@ -13,6 +14,10 @@ var colors = [
 export default class Directory extends Component {
 
   static styles = {
+    icon: {
+      marginRight: "5px",
+    },
+
     name: {
       cursor: "pointer",
       padding: "4px 5px",
@@ -51,6 +56,7 @@ export default class Directory extends Component {
               onmousedown: stop(),
               ss: this.open() ? "nameOpen" : "name",
             },
+            m.component(Icon, "directory", { ss: this.getStyle("icon") }),
             this.file.name
           ),
           this.open() && m("div",

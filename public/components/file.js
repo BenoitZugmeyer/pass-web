@@ -1,11 +1,16 @@
 import m from "mithril";
 import Component from "../component";
 import FileContent from "./file-content";
+import Icon from "./icon";
 import { stop } from "../dom-util";
 
 export default class File extends Component {
 
   static styles = {
+
+    icon: {
+      marginRight: "5px",
+    },
 
     name: {
       cursor: "pointer",
@@ -46,6 +51,7 @@ export default class File extends Component {
             onmousedown: stop(),
             ss: this.open() ? "nameOpen" : "name",
           },
+          m.component(Icon, "file", { ss: this.getStyle("icon") }),
           name
         ),
         this.open() && m.component(FileContent, { path: this.path }),
