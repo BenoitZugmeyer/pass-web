@@ -26,7 +26,7 @@ const listDirectory = PromiseUtil.wrapRun(function* (root, filter) {
     if (!filter || filter(name, stat)) {
       return stat.isDirectory() ? {
         name,
-        children: yield listDirectory(filePath),
+        children: yield listDirectory(filePath, filter),
       } : {
         name,
       };
