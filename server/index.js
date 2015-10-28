@@ -180,7 +180,7 @@ function launchApp(conf) {
   app.use(express.static(path.join(__dirname, "..", "dist")));
   app.use("/api", apiRouter(conf));
 
-  app.listen(3000, "localhost", function () {
+  app.listen(conf.port, "localhost", function () {
     const address = this.address();
     log.info`Server listening on http://${address.address}:${address.port}`;
   });
@@ -190,6 +190,7 @@ const args = parseArgs(process.argv, {
   alias: {
     debug: [ "d" ],
     store: [ "s" ],
+    port: [ "p" ],
   },
   boolean: [ "debug" ],
 });
@@ -207,6 +208,7 @@ PromiseUtil.run(function* () {
   launchApp({
     passwordStorePath,
     keys,
+    port: args.port,
   });
 })
 .catch(log.error);
