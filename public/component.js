@@ -104,3 +104,30 @@ export default class Component {
   }
 
 }
+
+
+
+let style = document.createElement("style");
+document.head.appendChild(style);
+
+function tryRule(rule) {
+  try {
+    style.sheet.insertRule(rule, 0)
+    return true;
+  }
+  catch (e) {
+    return false;
+  }
+}
+
+if (tryRule("::-moz-selection {}")) {
+  Component.sansSelNS.transforms[':selection'] = (attr) => {
+    return { ':-moz-selection': attr };
+  };
+}
+else if (!tryRule("::selection {}")) {
+  Component.sansSelNS.transforms[':selection'] = () => ({});
+}
+
+document.head.removeChild(style);
+style = null;
