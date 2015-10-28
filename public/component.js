@@ -68,4 +68,9 @@ export default class Component {
     return this.view;
   }
 
+  getStyle() {
+    const ns = this.constructor.sansSelNS;
+    return ns.get.apply(ns, arguments);
+  }
+
 }
