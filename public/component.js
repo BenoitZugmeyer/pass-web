@@ -48,13 +48,20 @@ export default class Component {
     Object.defineProperty(this, "view", {
       value(component) {
         const rendered = component.render();
-        iterate(rendered, (child, i, children) => {
-          if (!child) children[i] = undefined;
-          else if (child.tag && child.attrs && child.attrs.ss) {
+
+        const renderss = (child) => {
+          if (child.tag && child.attrs && child.attrs.ss) {
             child.attrs.className = component.constructor.sansSelNS.render(child.attrs.ss);
             delete child.attrs.ss;
           }
+        };
+
+        iterate(rendered, (child, i, children) => {
+          if (!child) children[i] = undefined;
+          else renderss(child);
         });
+
+        renderss(rendered);
         return rendered;
       },
     });
