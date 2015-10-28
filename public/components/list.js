@@ -7,17 +7,22 @@ import Directory from "./directory";
 
 export default class List extends Component {
 
+  static styles = {
+    header: {
+      textAlign: "right",
+    },
+    button: {
+      verticalAlign: "middle",
+    },
+  };
+
   render() {
     return (
       m("div", [
-        m("div", {
-          style: { textAlign: "right" },
-        }, [
+        m("div", { ss: "header" }, [
           m("button", {
             onclick: stop(logout),
-            style: {
-              verticalAlign: "middle",
-            },
+            ss: "button",
           }, "Logout"),
         ]),
         m.component(Directory, { file: { children: Store.list } }),

@@ -12,6 +12,18 @@ var colors = [
 
 export default class Directory extends Component {
 
+  static styles = {
+    name: {
+      cursor: "pointer",
+      padding: "4px 5px",
+    },
+
+    nameOpen: {
+      inherit: "name",
+      fontWeight: "bold",
+    },
+  };
+
   constructor({ file, parentPath }) {
     super();
     this.file = file;
@@ -37,12 +49,7 @@ export default class Directory extends Component {
             {
               onclick: ::this.toggle,
               onmousedown: stop(),
-              style: Object.assign({
-                cursor: "pointer",
-                padding: "4px 5px",
-              }, this.open() && {
-                fontWeight: "bold",
-              }),
+              ss: this.open() ? "nameOpen" : "name",
             },
             this.file.name
           ),
