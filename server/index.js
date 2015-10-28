@@ -67,8 +67,17 @@ const getGPGId = PromiseUtil.wrapRun(function* (rootPath) {
 
   if (stat.isDirectory()) {
     const gpgIdPath = path.resolve(rootPath, ".gpg-id");
-    const gpgStat = yield fileStat(gpgIdPath);
-    if (gpgStat.isFile()) {
+    let gpgStat;
+    try {
+      gpgStat = yield fileStat(gpgIdPath);
+    }
+    catch (e) {
+      // Ignore ENOENT errors, just check for parent directory
+      if (e.code !== "ENOENT") {
+        log.error(e);
+      }
+    }
+    if (gpgStat && gpgStat.isFile()) {
       return (yield fileRead(gpgIdPath, { encoding: "utf-8" })).trim();
     }
   }
