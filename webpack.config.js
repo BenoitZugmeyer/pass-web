@@ -29,11 +29,6 @@ let config = {
       {
         test: /\.js$/,
         loader: "babel",
-        query: {
-          stage: 0,
-          cacheDirectory: true,
-          loose: true,
-        },
       },
       {
         test: /\.svg$/,
