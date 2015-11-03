@@ -2,6 +2,7 @@ import m from "mithril";
 import { get } from "../actions";
 import Component from "../component";
 import { select, unselect } from "../selection";
+import { finally_ } from "../promise-util";
 
 export default class FileContent extends Component {
 
@@ -51,9 +52,10 @@ export default class FileContent extends Component {
     super();
     this.content = m.prop("");
     this.error = m.prop(false);
-    this.loading = m.prop(false);
+    this.loading = m.prop(true);
     get(path)
-    .then(this.content, this.error);
+      ::finally_(() => this.loading(false))
+      .then(this.content, this.error);
   }
 
   selectPassword() {
@@ -64,32 +66,36 @@ export default class FileContent extends Component {
     unselect();
   }
 
-  render() {
+  renderLoaded() {
     var lines = this.content().split("\n");
     var passwordLine = lines[0];
     var rest = lines.slice(1).join("\n");
 
+    return [
+      m("span", {
+        ss: "passwordSelector",
+        onmouseover: ::this.selectPassword,
+        onclick: ::this.selectPassword,
+        onmouseout: ::this.unselectPassword,
+      }, [
+        "\u2022".repeat(10),
+        m("span", {
+          ss: "passwordLine",
+          config: (element) => { this.passwordLineElement = element; },
+        }, passwordLine),
+      ]),
+      rest,
+    ];
+  }
+
+  render() {
     return (
       m("div", { ss: "root" }, [
         m("div", { ss: "wrapper" }, [
-          this.error() ?
-            m("div", { ss: "error" }, "Error: ", this.error().message) :
-            m("div", [
-              m("span", {
-                ss: "passwordSelector",
-                onmouseover: ::this.selectPassword,
-                onclick: ::this.selectPassword,
-                onmouseout: ::this.unselectPassword,
-              }, [
-                "\u2022".repeat(10),
-                m("span", {
-                  ss: "passwordLine",
-                  config: (element) => { this.passwordLineElement = element; },
-                }, passwordLine),
-              ]),
-            ]),
-            rest,
-          ]),
+          this.loading() ? m("div", "Loading...") :
+          this.error() ? m("div", { ss: "error" }, "Error: ", this.error().message) :
+            this.renderLoaded(),
+        ]),
       ])
     );
   }
