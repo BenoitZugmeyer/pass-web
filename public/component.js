@@ -4,8 +4,9 @@ import sansSel from "sans-sel";
 const names = new Map();
 
 function iterate(root, fn) {
-  if (root.children) {
-    root.children.forEach((child, i, children) => {
+  let children = Array.isArray(root) ? root : root.children;
+  if (children) {
+    children.forEach((child, i, children) => {
       if (child) iterate(child, fn);
       fn(child, i, children);
     });
