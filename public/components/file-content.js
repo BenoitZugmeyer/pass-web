@@ -1,7 +1,6 @@
 import m from "mithril";
 import { get } from "../actions";
 import Component from "../component";
-import { stop } from "../dom-util";
 
 export default class FileContent extends Component {
 
@@ -20,15 +19,24 @@ export default class FileContent extends Component {
       fontWeight: "bold",
     },
 
-    firstLine: {
-      backgroundColor: "#2C3E50",
-      color: "#2C3E50",
+    passwordSelector: {
       display: "inline-block",
-      ":selection": {
-        color: "#0A60C9",
-        // Chrome forces a semi-transparent background, this is a workaround
-        backgroundColor: "rgba(10, 96, 201, 0.99)",
+      position: "relative",
+      hover: {
+        backgroundColor: "#3498DB",
       },
+    },
+
+    passwordLine: {
+      display: "block",
+      position: "absolute",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0",
+      overflow: "hidden",
+      color: "transparent",
+      opacity: "0",
     },
 
     button: {
@@ -42,30 +50,26 @@ export default class FileContent extends Component {
     super();
     this.content = m.prop("");
     this.error = m.prop(false);
+    this.loading = m.prop(false);
     get(path)
     .then(this.content, this.error);
   }
 
-  copy() {
-    if (!this.firstLineElement) return;
+  selectPassword() {
+    if (!this.passwordLineElement) return;
+    this.unselectPassword();
     var range = document.createRange();
-    range.selectNode(this.firstLineElement);
+    range.selectNode(this.passwordLineElement);
     window.getSelection().addRange(range);
+  }
 
-    var successful = false;
-    try {
-      successful = document.execCommand('copy');
-    } catch (e) {
-      // Ignore error
-    }
-    // TODO handle successful
-
+  unselectPassword() {
     window.getSelection().removeAllRanges();
   }
 
   render() {
     var lines = this.content().split("\n");
-    var firstLine = lines[0];
+    var passwordLine = lines[0];
     var rest = lines.slice(1).join("\n");
 
     return (
@@ -75,13 +79,17 @@ export default class FileContent extends Component {
             m("div", { ss: "error" }, "Error: ", this.error().message) :
             m("div", [
               m("span", {
-                ss: "firstLine",
-                config: (element) => { this.firstLineElement = element; },
-              }, firstLine),
-              m("button", {
-                ss: "button",
-                onclick: stop(::this.copy),
-              }, "copy"),
+                ss: "passwordSelector",
+                onmouseover: ::this.selectPassword,
+                onclick: ::this.selectPassword,
+                onmouseout: ::this.unselectPassword,
+              }, [
+                "\u2022".repeat(10),
+                m("span", {
+                  ss: "passwordLine",
+                  config: (element) => { this.passwordLineElement = element; },
+                }, passwordLine),
+              ]),
             ]),
             rest,
           ]),
