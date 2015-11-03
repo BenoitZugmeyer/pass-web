@@ -4,27 +4,7 @@ import m from "mithril";
 import Component from "../component";
 import { signin } from "../actions";
 import { stop } from "../dom-util";
-
-var pu = {
-
-  finally(fn) {
-    return this.then(
-      (response) => {
-        fn();
-        return response;
-      },
-      (error) => {
-        fn();
-        throw error;
-      }
-    );
-  },
-
-  catch(fn) {
-    return this.then(null, fn);
-  },
-
-}
+import { catch_, finally_ } from "../promise-util";
 
 export default class Auth extends Component {
 
@@ -53,8 +33,8 @@ export default class Auth extends Component {
   submit() {
     this.loading(true);
     signin(this.passphrase())
-      ::pu.finally(() => this.loading(false))
-      ::pu.catch(this.error);
+      finally_(() => this.loading(false))
+      catch_(this.error);
   }
 
   render() {
