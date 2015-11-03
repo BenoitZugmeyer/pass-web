@@ -56,7 +56,7 @@ const wrapCPS = (fn, options) => {
         }
         else resolve(resultArgs[0]);
       });
-      fn.apply(null, args);
+      fn(...args);
     });
   };
 };

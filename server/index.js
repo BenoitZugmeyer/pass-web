@@ -131,7 +131,7 @@ function apiRouter(conf) {
 
       const filePath = yield realpath(path.resolve(
         conf.passwordStorePath,
-        path.join.apply(path.join, requestPath)
+        path.join(...requestPath)
       ));
 
       // Make sure the path is inside passwordStorePath and isn't in a dotted directory/file

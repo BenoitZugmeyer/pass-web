@@ -6,7 +6,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const getPath = (fullPath) => {
   const args = fullPath.split("/");
   args.unshift(__dirname);
-  return path.resolve.apply(null, args);
+  return path.resolve(...args);
 };
 
 const svgoConfig = {};

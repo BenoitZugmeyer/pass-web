@@ -100,7 +100,7 @@ export default class Component {
 
   getStyle() {
     const ns = this.constructor.sansSelNS;
-    return ns.get.apply(ns, arguments);
+    return ns.get(...arguments);
   }
 
 }
