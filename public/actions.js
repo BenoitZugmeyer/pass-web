@@ -1,5 +1,6 @@
 import m from "mithril";
 import store from "./store";
+import { emptyClipboard } from "./selection";
 
 function call(route, data) {
   m.redraw();
@@ -24,5 +25,6 @@ export function get(path) {
 }
 
 export function logout() {
+  emptyClipboard();
   store.setList();
 }

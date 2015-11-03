@@ -1,6 +1,7 @@
 import m from "mithril";
 import { get } from "../actions";
 import Component from "../component";
+import { select, unselect } from "../selection";
 
 export default class FileContent extends Component {
 
@@ -56,15 +57,11 @@ export default class FileContent extends Component {
   }
 
   selectPassword() {
-    if (!this.passwordLineElement) return;
-    this.unselectPassword();
-    var range = document.createRange();
-    range.selectNode(this.passwordLineElement);
-    window.getSelection().addRange(range);
+    select(this.passwordLineElement);
   }
 
   unselectPassword() {
-    window.getSelection().removeAllRanges();
+    unselect();
   }
 
   render() {
