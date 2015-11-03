@@ -1,10 +1,11 @@
 import m from "mithril";
 import store from "./store";
+import { finally_ } from "./promise-util";
 import { emptyClipboard } from "./selection";
 
 function call(route, data) {
-  m.redraw();
   return m.request({
+    background: true,
     method: "POST",
     url: "api/" + route,
     data,
@@ -19,12 +20,13 @@ function call(route, data) {
       return xhr.response;
     },
   })
-  .then((response) => {
-    if (response.error) {
-      throw Object.assign(new Error(response.error.message), response.error);
-    }
-    return response;
-  });
+    .then((response) => {
+      if (response.error) {
+        throw Object.assign(new Error(response.error.message), response.error);
+      }
+      return response;
+    })
+    ::finally_(() => setTimeout(() => m.redraw(), 0));
 }
 
 export function signin(passphrase) {
