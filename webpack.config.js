@@ -21,7 +21,7 @@ let config = {
   plugins: [
     new HtmlWebpackPlugin({
       hash: true,
-      title: "Pass",
+      template: getPath("public/index.html"),
     }),
   ],
   module: {
