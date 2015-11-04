@@ -18,6 +18,7 @@ export default class Icon extends Component {
   }
 
   render() {
+    console.log("RENDER");
     return m("img", Object.assign({}, this.attrs, {
       src: `${icons}#${this.name}`,
       ss: ["root", this.attrs.ss],

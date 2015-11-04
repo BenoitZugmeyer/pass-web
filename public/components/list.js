@@ -4,6 +4,7 @@ import Store from "../store";
 import { logout } from "../actions";
 import { stop } from "../dom-util";
 import Directory from "./directory";
+import File from "./file";
 
 export default class List extends Component {
 
@@ -25,7 +26,7 @@ export default class List extends Component {
             ss: "button",
           }, "Logout"),
         ]),
-        m.component(Directory, { file: { children: Store.list } }),
+        Store.list.map((file) => m.component(file.children ? Directory : File, { file })),
       ])
     );
   }

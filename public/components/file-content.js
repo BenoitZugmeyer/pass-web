@@ -3,18 +3,13 @@ import { get } from "../actions";
 import Component from "../component";
 import { select, unselect } from "../selection";
 import { finally_ } from "../promise-util";
+import { marginSize } from "../css";
 
 export default class FileContent extends Component {
 
   static styles = {
     root: {
-      margin: "0 0 0 5px",
       overflow: "hidden",
-      backgroundColor: "#BDC3C7",
-      marginBottom: "5px",
-    },
-    wrapper: {
-      padding: "4px 5px",
     },
     error: {
       color: "#C0392B",
@@ -44,7 +39,7 @@ export default class FileContent extends Component {
     button: {
       inherit: "button",
 
-      marginLeft: "5px",
+      marginLeft: marginSize,
     },
   };
 
@@ -91,11 +86,9 @@ export default class FileContent extends Component {
   render() {
     return (
       m("div", { ss: "root" }, [
-        m("div", { ss: "wrapper" }, [
-          this.loading() ? m("div", "Loading...") :
-          this.error() ? m("div", { ss: "error" }, "Error: ", this.error().message) :
-            this.renderLoaded(),
-        ]),
+        this.loading() ? m("div", "Loading...") :
+        this.error() ? m("div", { ss: "error" }, "Error: ", this.error().message) :
+          this.renderLoaded(),
       ])
     );
   }
