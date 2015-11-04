@@ -22,7 +22,6 @@
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "file-loader": "^0.8.4",
-    "gpg": "^0.4.0",
     "html-webpack-plugin": "^1.6.2",
     "kbpgp": "^2.0.48",
     "minimist": "^1.2.0",
