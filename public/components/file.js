@@ -11,10 +11,6 @@ export default class FileContent extends Component {
     root: {
       overflow: "hidden",
     },
-    error: {
-      color: "#C0392B",
-      fontWeight: "bold",
-    },
 
     passwordSelector: {
       display: "inline-block",
@@ -34,6 +30,10 @@ export default class FileContent extends Component {
       overflow: "hidden",
       color: "transparent",
       opacity: "0",
+    },
+
+    rest: {
+      whiteSpace: "pre",
     },
 
     button: {
@@ -67,19 +67,21 @@ export default class FileContent extends Component {
     var rest = lines.slice(1).join("\n");
 
     return [
-      m("span", {
-        ss: "passwordSelector",
-        onmouseover: ::this.selectPassword,
-        onclick: ::this.selectPassword,
-        onmouseout: ::this.unselectPassword,
-      }, [
-        "\u2022".repeat(10),
+      m("div",
         m("span", {
-          ss: "passwordLine",
-          config: (element) => { this.passwordLineElement = element; },
-        }, passwordLine),
-      ]),
-      rest,
+          ss: "passwordSelector",
+          onmouseover: ::this.selectPassword,
+          onclick: ::this.selectPassword,
+          onmouseout: ::this.unselectPassword,
+        }, [
+          "\u2022".repeat(10),
+          m("span", {
+            ss: "passwordLine",
+            config: (element) => { this.passwordLineElement = element; },
+          }, passwordLine),
+        ]),
+      ),
+      m("div", { ss: "rest" }, rest),
     ];
   }
 

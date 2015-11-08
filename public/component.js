@@ -1,5 +1,6 @@
 
 import sansSel from "sans-sel";
+import { borderRadius, boxShadow } from "./css";
 
 const names = new Map();
 
@@ -19,15 +20,15 @@ export default class Component {
     input: {
       font: "inherit",
       padding: "6px 12px",
-      borderRadius: "4px",
+      borderRadius,
       border: "1px solid transparent",
+      boxShadow,
       outline: 0,
     },
 
     textField: {
       inherit: "input",
 
-      borderColor: "#BDC3C7",
       backgroundColor: "#fff",
     },
 
@@ -35,14 +36,20 @@ export default class Component {
       inherit: "input",
 
       color: "#fff",
-      borderColor: "#16A085",
-      backgroundColor: "#16A085",
+      borderColor: "#27AE60",
+      backgroundColor: "#27AE60",
       cursor: "pointer",
 
       hover: {
-        backgroundColor: "#1ABC9C",
+        backgroundColor: "#2ECC71",
       },
     },
+
+    error: {
+      color: "#C0392B",
+      fontWeight: "bold",
+    },
+
   };
 
   static get sansSelNS() {

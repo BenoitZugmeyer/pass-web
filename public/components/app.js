@@ -5,6 +5,7 @@ import Store from "../store";
 import List from "./list";
 import { logout } from "../actions";
 import { stop } from "../dom-util";
+import { marginSize } from "../css";
 
 export default class App extends Component {
 
@@ -12,19 +13,20 @@ export default class App extends Component {
     root: {
       display: "flex",
       flexDirection: "column",
+      alignItems: "stretch",
+
       position: "relative",
       boxSizing: "border-box",
 
       minHeight: "100vh",
       maxWidth: "40em",
       margin: "auto",
-      padding: "10px",
-
-      backgroundColor: "#ECF0F1",
+      padding: "12px",
     },
 
     header: {
       textAlign: "right",
+      marginBottom: marginSize,
     },
   };
 

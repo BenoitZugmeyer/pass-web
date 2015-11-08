@@ -3,6 +3,7 @@ import Component from "../component";
 import Store from "../store";
 import Directory from "./directory";
 import File from "./file";
+import { marginSize, borderRadius, boxShadow } from "../css";
 
 
 const transitionDelay = 0.5; // second
@@ -12,8 +13,16 @@ export default class List extends Component {
 
   static styles = {
     root: {
+      borderRadius,
+      backgroundColor: "#ECF0F1",
+      boxShadow,
+      overflow: "hidden",
+    },
+
+    container: {
       display: "flex",
       maxHeight,
+      marginLeft: "-2px", // Hide left separator
     },
 
     column: {
@@ -21,20 +30,23 @@ export default class List extends Component {
       display: "inline-block",
       transition: `width ${transitionDelay}s`,
       verticalAlign: "top",
+      overflow: "hidden",
     },
 
     columnContent: {
-      padding: "5px",
+      padding: `${marginSize}`,
+      paddingLeft: `calc(${marginSize} + 2px)`,
       overflowY: "auto",
+      overflowX: "hidden",
       maxHeight,
       boxSizing: "border-box",
     },
 
     separator: {
       position: "absolute",
-      left: "-1px",
-      top: "5px",
-      bottom: "5px",
+      left: "0",
+      top: marginSize,
+      bottom: marginSize,
 
       border: "1px solid #BDC3C7",
     },
@@ -89,7 +101,7 @@ export default class List extends Component {
         ss: "column",
         style: { width },
       }, [
-        index && m("div", { ss: "separator" }),
+        m("div", { ss: "separator" }),
         m("div", {
           ss: "columnContent",
           key: file.name,
@@ -122,6 +134,8 @@ export default class List extends Component {
         });
       }
       else {
+        const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0);
+
         nodes.forEach((node, index) => {
           if (index >= columnCount) {
             // Shrink previous extra columns
@@ -133,7 +147,6 @@ export default class List extends Component {
           }
           else {
             // Shrink other columns to fill the remaining space
-            const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0);
             node.style.width = `${remainingWidth}px`;
           }
         });
@@ -142,9 +155,11 @@ export default class List extends Component {
     };
 
     return (
-      m("div", { ss: "root", config },
-        renderColumn({ children: Store.list }, 0),
-        renderPath.map((file, i) => renderColumn(file, i + 1)),
+      m("div", { ss: "root" },
+        m("div", { ss: "container", config },
+          renderColumn({ children: Store.list }, 0),
+          renderPath.map((file, i) => renderColumn(file, i + 1)),
+        )
       )
     );
   }

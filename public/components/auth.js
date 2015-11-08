@@ -5,20 +5,24 @@ import Component from "../component";
 import { signin } from "../actions";
 import { stop } from "../dom-util";
 import { catch_, finally_ } from "../promise-util";
+import { marginSize } from "../css";
 
 export default class Auth extends Component {
 
   static styles = {
 
     root: {
-      alignSelf: "center",
-      flex: "1",
       textAlign: "center",
     },
 
     textField: {
       inherit: "textField",
-      marginRight: "10px",
+      marginRight: marginSize,
+    },
+
+    error: {
+      inherit: "error",
+      marginBottom: marginSize,
     },
 
   };
@@ -33,15 +37,15 @@ export default class Auth extends Component {
   submit() {
     this.loading(true);
     signin(this.passphrase())
-      finally_(() => this.loading(false))
-      catch_(this.error);
+      ::finally_(() => this.loading(false))
+      ::catch_(this.error);
   }
 
   render() {
     return (
       m("form", { ss: "root", onsubmit: stop(::this.submit) }, [
 
-        this.error() && m("div", "Error: ", this.error().message),
+        this.error() && m("div", { ss: "error" }, "Error: ", this.error().message),
 
         m("input", {
           ss: "textField",

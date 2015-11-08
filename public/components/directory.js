@@ -12,7 +12,7 @@ export default class Directory extends Component {
         {
           key: child.name,
           icon: isDirectory ? "directory" : "file",
-          title: child.name,
+          title: isDirectory ? child.name : child.name.slice(0, -4),
           active: child === activeChild,
           onClick: () => onActiveChildChanged(child === activeChild ? null : child),
         }
