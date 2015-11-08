@@ -1,28 +1,23 @@
 import m from "mithril";
 import Component from "../component";
-import File from "./file";
-import Card from "./card";
+import Line from "./line";
 
 export default class Directory extends Component {
 
-  constructor({ file, parentPath=[] }) {
-    super();
-    this.file = file;
-    this.path = parentPath.slice();
-    this.path.push(file.name);
-  }
-
-  render() {
-    return m.component(Card, {
-      icon: "directory",
-      title: this.file.name,
-      children: this.file.children.map((file) => {
-        return m.component(
-          file.children ? Directory : File,
-          { key: file.name, file, parentPath: this.path }
-        );
-      }),
-    });
+  render({ children, activeChild, onActiveChildChanged=() => {} }) {
+    return m("div", children.map((child) => {
+      const isDirectory = child.children;
+      return m.component(
+        Line,
+        {
+          key: child.name,
+          icon: isDirectory ? "directory" : "file",
+          title: child.name,
+          active: child === activeChild,
+          onClick: () => onActiveChildChanged(child === activeChild ? null : child),
+        }
+      );
+    }));
   }
 
 }

@@ -11,17 +11,10 @@ export default class Icon extends Component {
     },
   };
 
-  constructor(name, attrs={}) {
-    super();
-    this.name = name;
-    this.attrs = attrs;
-  }
-
-  render() {
-    console.log("RENDER");
-    return m("img", Object.assign({}, this.attrs, {
-      src: `${icons}#${this.name}`,
-      ss: ["root", this.attrs.ss],
+  render(name, attrs) {
+    return m("img", Object.assign({}, attrs, {
+      src: `${icons}#${name}`,
+      ss: ["root", attrs.ss],
     }));
   }
 

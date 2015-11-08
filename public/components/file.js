@@ -1,27 +1,96 @@
 import m from "mithril";
+import { get } from "../actions";
 import Component from "../component";
-import FileContent from "./file-content";
-import Card from "./card";
+import { select, unselect } from "../selection";
+import { finally_ } from "../promise-util";
+import { marginSize } from "../css";
 
-export default class Directory extends Component {
+export default class FileContent extends Component {
 
-  constructor({ file, parentPath=[] }) {
+  static styles = {
+    root: {
+      overflow: "hidden",
+    },
+    error: {
+      color: "#C0392B",
+      fontWeight: "bold",
+    },
+
+    passwordSelector: {
+      display: "inline-block",
+      position: "relative",
+      hover: {
+        backgroundColor: "#3498DB",
+      },
+    },
+
+    passwordLine: {
+      display: "block",
+      position: "absolute",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0",
+      overflow: "hidden",
+      color: "transparent",
+      opacity: "0",
+    },
+
+    button: {
+      inherit: "button",
+
+      marginLeft: marginSize,
+    },
+  };
+
+  constructor({ path }) {
     super();
-    this.file = file;
-    this.path = parentPath.slice();
-    this.path.push(file.name);
+    this.content = m.prop("");
+    this.error = m.prop(false);
+    this.loading = m.prop(true);
+    get(path)
+      ::finally_(() => this.loading(false))
+      .then(this.content, this.error);
+  }
+
+  selectPassword() {
+    select(this.passwordLineElement);
+  }
+
+  unselectPassword() {
+    unselect();
+  }
+
+  renderLoaded() {
+    var lines = this.content().split("\n");
+    var passwordLine = lines[0];
+    var rest = lines.slice(1).join("\n");
+
+    return [
+      m("span", {
+        ss: "passwordSelector",
+        onmouseover: ::this.selectPassword,
+        onclick: ::this.selectPassword,
+        onmouseout: ::this.unselectPassword,
+      }, [
+        "\u2022".repeat(10),
+        m("span", {
+          ss: "passwordLine",
+          config: (element) => { this.passwordLineElement = element; },
+        }, passwordLine),
+      ]),
+      rest,
+    ];
   }
 
   render() {
-    var title = this.file.name;
-    var index = title.lastIndexOf(".");
-    if (index > 0) title = title.slice(0, index);
-
-    return m.component(Card, {
-      icon: "file",
-      title,
-      children: m.component(FileContent, { path: this.path }),
-    });
+    return (
+      m("div", { ss: "root" }, [
+        this.loading() ? m("div", "Loading...") :
+        this.error() ? m("div", { ss: "error" }, "Error: ", this.error().message) :
+          this.renderLoaded(),
+      ])
+    );
   }
 
 }

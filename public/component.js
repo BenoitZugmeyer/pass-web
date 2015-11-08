@@ -69,7 +69,9 @@ export default class Component {
   static get controller() {
     Object.defineProperty(this, "controller", {
       value: (...args) => {
-        return new this(...args);
+        var result = new this(...args);
+        result.args = args;
+        return result;
       },
     });
     return this.controller;
@@ -77,8 +79,8 @@ export default class Component {
 
   static get view() {
     Object.defineProperty(this, "view", {
-      value(component) {
-        const rendered = component.render();
+      value(component, ...args) {
+        const rendered = component.render(...args);
 
         const renderss = (child) => {
           if (child.tag && child.attrs && child.attrs.ss) {

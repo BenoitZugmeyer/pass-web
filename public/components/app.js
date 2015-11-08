@@ -3,12 +3,15 @@ import Auth from "./auth";
 import Component from "../component";
 import Store from "../store";
 import List from "./list";
+import { logout } from "../actions";
+import { stop } from "../dom-util";
 
 export default class App extends Component {
 
   static styles = {
     root: {
       display: "flex",
+      flexDirection: "column",
       position: "relative",
       boxSizing: "border-box",
 
@@ -19,11 +22,27 @@ export default class App extends Component {
 
       backgroundColor: "#ECF0F1",
     },
+
+    header: {
+      textAlign: "right",
+    },
   };
 
   render() {
     return (
-      m("div", { ss: "root" }, Store.loggedIn ? m.component(List) : m.component(Auth))
+      m("div",
+        { ss: "root" },
+        Store.loggedIn ? [
+          m("div", { ss: "header" }, [
+            m("button", {
+              onclick: stop(logout),
+              ss: "button",
+            }, "Logout"),
+          ]),
+          m.component(List),
+        ] :
+        m.component(Auth)
+      )
     );
   }
 
