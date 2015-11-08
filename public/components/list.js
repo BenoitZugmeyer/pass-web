@@ -8,6 +8,7 @@ import { marginSize, borderRadius, boxShadow } from "../css";
 
 const transitionDelay = 0.5; // second
 const maxHeight = "400px";
+const empty = {};
 
 export default class List extends Component {
 
@@ -64,9 +65,12 @@ export default class List extends Component {
 
   render() {
 
-    var renderPath = this.path.slice();
-    if (this.previousPath) {
-      renderPath.push(...this.previousPath.slice(this.path.length));
+    const renderPath = this.path.slice();
+    if (this.previousPath && this.previousPath.length > this.path.length) {
+      const isSubpath = this.path[this.path.length - 1] === this.previousPath[this.path.length - 1];
+      for (const child of this.previousPath.slice(this.path.length)) {
+        renderPath.push(isSubpath ? child : empty);
+      }
       clearTimeout(this.redrawTimer);
       this.redrawTimer = setTimeout(() => {
         this.previousPath = undefined;
@@ -88,7 +92,7 @@ export default class List extends Component {
           activeChild: this.path[index],
         });
       }
-      else {
+      else if (file !== empty) {
         children = m.component(File, { path: columnPath.map((f) => f.name) });
       }
 
