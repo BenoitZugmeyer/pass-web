@@ -85,6 +85,7 @@ export default class FileContent extends Component {
     passwordSelector: {
       display: "inline-block",
       position: "relative",
+      lineHeight: "24px",
       hover: {
         backgroundColor: "#3498DB",
       },
@@ -100,10 +101,12 @@ export default class FileContent extends Component {
       overflow: "hidden",
       color: "transparent",
       opacity: "0",
+      fontSize: "1000px",
     },
 
     rest: {
       whiteSpace: "pre",
+      lineHeight: "24px",
     },
 
     button: {
