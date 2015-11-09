@@ -5,6 +5,76 @@ import { select, unselect } from "../selection";
 import { finally_ } from "../promise-util";
 import { marginSize } from "../css";
 
+
+class Renderer {
+
+  constructor() {
+    this._renderers = [];
+    this._re = null;
+  }
+
+  add(re, fn) {
+    this._renderers.push({ re, fn });
+    this._re = null;
+  }
+
+  render(text) {
+    let re = this._re;
+    if (!re) {
+      this._re = re = new RegExp(
+        this._renderers.map(({ re }) => `(${re.source})`).join("|"),
+        "gm"
+      );
+    }
+
+    const result = [];
+
+    while (true) {
+      const lastIndex = re.lastIndex;
+      const match = re.exec(text);
+
+      if (!match) {
+        result.push(text.slice(lastIndex));
+        break;
+      }
+
+      let rendererIndex = 0;
+      for (; match[rendererIndex + 1] === undefined; rendererIndex += 1);
+
+      result.push(
+        text.slice(lastIndex, match.index),
+        this._renderers[rendererIndex].fn(match),
+      );
+    }
+
+    return result;
+  }
+
+}
+
+const renderer = new Renderer();
+
+renderer.add(/\bhttps?:\/\/\S+/,
+             (match) => {
+               return m("a", {
+                 ss: "link",
+                 href: match[0],
+                 target: "_blank",
+               }, match[0]);
+             });
+
+renderer.add(/\S+@\S+/,
+             (match) => {
+               return m("a", {
+                 ss: "link",
+                 href: `mailto:${match[0]}`,
+                 target: "_blank",
+               }, match[0]);
+             });
+
+renderer.add(/^[A-Z].*?:/,
+             (match) => m("strong", match[0]));
+
 export default class FileContent extends Component {
 
   static styles = {
@@ -40,6 +110,14 @@ export default class FileContent extends Component {
       inherit: "button",
 
       marginLeft: marginSize,
+    },
+
+    link: {
+      color: "#2C3E50",
+      textDecoration: "none",
+      hover: {
+        textDecoration: "underline",
+      },
     },
   };
 
@@ -81,7 +159,7 @@ export default class FileContent extends Component {
           }, passwordLine),
         ]),
       ),
-      m("div", { ss: "rest" }, rest),
+      m("div", { ss: "rest" }, renderer.render(rest.trimRight())),
     ];
   }
 
