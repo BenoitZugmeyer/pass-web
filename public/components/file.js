@@ -75,7 +75,7 @@ renderer.add(/\S+@\S+/,
 renderer.add(/^[A-Z].*?:/,
              (match) => m("strong", match[0]));
 
-export default class FileContent extends Component {
+export default class File extends Component {
 
   static styles = {
     root: {
