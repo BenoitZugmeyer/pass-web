@@ -6,21 +6,21 @@ const path = require("path");
 const express = require("express");
 const parseArgs = require("minimist");
 const bodyParser = require("body-parser");
-const PromiseUtil = require("./promise-util");
-const Keys = require("./keys");
+const promiseUtil = require("./promiseUtil");
+const Keys = require("./Keys");
 const log = require("./log");
-const fileStat = PromiseUtil.wrapCPS(fs.stat);
-const fileRead = PromiseUtil.wrapCPS(fs.readFile);
-const directoryRead = PromiseUtil.wrapCPS(fs.readdir);
-const realpath = PromiseUtil.wrapCPS(fs.realpath);
+const fileStat = promiseUtil.wrapCPS(fs.stat);
+const fileRead = promiseUtil.wrapCPS(fs.readFile);
+const directoryRead = promiseUtil.wrapCPS(fs.readdir);
+const realpath = promiseUtil.wrapCPS(fs.realpath);
 
 class InvalidParameter extends Error {}
 class AuthError extends Error {}
 
-const listDirectory = PromiseUtil.wrapRun(function* (root, filter) {
+const listDirectory = promiseUtil.wrapRun(function* (root, filter) {
   const files = yield directoryRead(root);
 
-  const result = yield files.map(PromiseUtil.wrapRun(function* (name) {
+  const result = yield files.map(promiseUtil.wrapRun(function* (name) {
     const filePath = path.join(root, name);
     const stat = yield fileStat(filePath);
     if (!filter || filter(name, stat)) {
@@ -62,7 +62,7 @@ function filterFiles(name, stat) {
   );
 }
 
-const getGPGId = PromiseUtil.wrapRun(function* (rootPath) {
+const getGPGId = promiseUtil.wrapRun(function* (rootPath) {
   const stat = yield fileStat(rootPath);
 
   if (stat.isDirectory()) {
@@ -88,7 +88,7 @@ const getGPGId = PromiseUtil.wrapRun(function* (rootPath) {
   return getGPGId(parentPath);
 });
 
-const auth = PromiseUtil.wrapRun(function* (conf, requestPath, passphrase) {
+const auth = promiseUtil.wrapRun(function* (conf, requestPath, passphrase) {
   const gpgId = yield getGPGId(requestPath || conf.passwordStorePath);
 
   if (!(yield conf.keys.verify(gpgId, passphrase))) {
@@ -113,7 +113,7 @@ function apiRouter(conf) {
   }
 
   function wrap(gen) {
-    return PromiseUtil.wrapRun(function* (req, res, next) {
+    return promiseUtil.wrapRun(function* (req, res, next) {
       try {
         yield* gen(req, res, next);
       }
@@ -124,7 +124,7 @@ function apiRouter(conf) {
     });
   }
 
-  const getSecurePath = PromiseUtil.wrapRun(function* (requestPath) {
+  const getSecurePath = promiseUtil.wrapRun(function* (requestPath) {
     try {
       if (!Array.isArray(requestPath)) return;
       if (requestPath.some((p) => typeof p !== "string")) return;
@@ -195,7 +195,7 @@ const args = parseArgs(process.argv, {
   boolean: [ "debug" ],
 });
 
-PromiseUtil.run(function* () {
+promiseUtil.run(function* () {
   const passwordStorePath = yield realpath(args.store || path.join(process.env.HOME, ".password-store"));
   const passwordStoreStat = yield fileStat(passwordStorePath);
   if (!passwordStoreStat.isDirectory()) throw new Error(`${passwordStorePath} is not a directory`);

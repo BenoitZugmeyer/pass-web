@@ -3,12 +3,12 @@
 const fs = require("fs");
 const kbpgp = require("kbpgp");
 
-const PromiseUtil = require("./promise-util");
+const promiseUtil = require("./promiseUtil");
 const log = require("./log");
 
-const importFromArmoredPGP = PromiseUtil.wrapCPS(kbpgp.KeyManager.import_from_armored_pgp);
-const fileRead = PromiseUtil.wrapCPS(fs.readFile);
-const unbox = PromiseUtil.wrapCPS(kbpgp.unbox);
+const importFromArmoredPGP = promiseUtil.wrapCPS(kbpgp.KeyManager.import_from_armored_pgp);
+const fileRead = promiseUtil.wrapCPS(fs.readFile);
+const unbox = promiseUtil.wrapCPS(kbpgp.unbox);
 
 class KeyError extends Error {}
 
@@ -44,7 +44,7 @@ module.exports = class Keys {
     const material = this._get(id).material;
 
     return (
-      PromiseUtil.wrapCPS(material.unlock.bind(material))({ passphrase })
+      promiseUtil.wrapCPS(material.unlock.bind(material))({ passphrase })
       .then(() => true, () => false)
     );
   }
@@ -53,7 +53,7 @@ module.exports = class Keys {
 
     if (!passphrase) throw new Error("passphrase is required");
 
-    const fetch = PromiseUtil.wrapRun(function* (ids, opts) {
+    const fetch = promiseUtil.wrapRun(function* (ids, opts) {
       let error;
       for (let index = 0; index < ids.length; index++) {
         const requestId = keyId(ids[index]);

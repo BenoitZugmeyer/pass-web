@@ -1,7 +1,7 @@
 import m from "mithril";
-import Component from "../component";
-import Icon from "./icon";
-import { stop } from "../dom-util";
+import Component from "../Component";
+import Icon from "./Icon";
+import { stop } from "../domUtil";
 import { marginSize, borderRadius } from "../css";
 
 const background = "236, 240, 241";

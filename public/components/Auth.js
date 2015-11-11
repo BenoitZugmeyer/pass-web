@@ -1,10 +1,10 @@
 "use strict";
 
 import m from "mithril";
-import Component from "../component";
+import Component from "../Component";
 import { signin } from "../actions";
-import { stop } from "../dom-util";
-import { catch_, finally_ } from "../promise-util";
+import { stop } from "../domUtil";
+import { catch_, finally_ } from "../promiseUtil";
 import { marginSize } from "../css";
 
 export default class Auth extends Component {

@@ -1,5 +1,5 @@
 import m from "mithril";
-import Component from "../component";
+import Component from "../Component";
 import icons from "../icons.svg";
 
 export default class Icon extends Component {

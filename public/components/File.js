@@ -1,8 +1,8 @@
 import m from "mithril";
 import { get } from "../actions";
-import Component from "../component";
+import Component from "../Component";
 import { select, unselect } from "../selection";
-import { finally_ } from "../promise-util";
+import { finally_ } from "../promiseUtil";
 import { marginSize } from "../css";
 
 

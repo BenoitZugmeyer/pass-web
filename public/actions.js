@@ -1,6 +1,6 @@
 import m from "mithril";
 import store from "./store";
-import { finally_ } from "./promise-util";
+import { finally_ } from "./promiseUtil";
 import { emptyClipboard } from "./selection";
 
 function call(route, data) {

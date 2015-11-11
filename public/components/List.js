@@ -1,8 +1,8 @@
 import m from "mithril";
-import Component from "../component";
+import Component from "../Component";
 import Store from "../store";
-import Directory from "./directory";
-import File from "./file";
+import Directory from "./Directory";
+import File from "./File";
 import { marginSize, borderRadius, boxShadow } from "../css";
 
 

@@ -1,6 +1,6 @@
 import m from "mithril";
-import Component from "../component";
-import Line from "./line";
+import Component from "../Component";
+import Line from "./Line";
 
 export default class Directory extends Component {
 

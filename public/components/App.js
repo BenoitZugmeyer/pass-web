@@ -1,10 +1,10 @@
 import m from "mithril";
-import Auth from "./auth";
-import Component from "../component";
-import Store from "../store";
-import List from "./list";
+import Auth from "./Auth";
+import Component from "../Component";
+import store from "../store";
+import List from "./List";
 import { logout } from "../actions";
-import { stop } from "../dom-util";
+import { stop } from "../domUtil";
 import { marginSize } from "../css";
 
 export default class App extends Component {
@@ -34,7 +34,7 @@ export default class App extends Component {
     return (
       m("div",
         { ss: "root" },
-        Store.loggedIn ? [
+        store.loggedIn ? [
           m("div", { ss: "header" }, [
             m("button", {
               onclick: stop(logout),
