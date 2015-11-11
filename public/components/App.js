@@ -3,7 +3,8 @@ import Auth from "./Auth";
 import Component from "../Component";
 import store from "../store";
 import List from "./List";
-import { logout } from "../actions";
+import Search from "./Search";
+import { logout, search } from "../actions";
 import { stop } from "../domUtil";
 import { marginSize } from "../css";
 
@@ -25,7 +26,8 @@ export default class App extends Component {
     },
 
     header: {
-      textAlign: "right",
+      display: "flex",
+      justifyContent: "space-between",
       marginBottom: marginSize,
     },
   };
@@ -36,12 +38,13 @@ export default class App extends Component {
         { ss: "root" },
         store.loggedIn ? [
           m("div", { ss: "header" }, [
+            m.component(Search, { onChange: search }),
             m("button", {
               onclick: stop(logout),
               ss: "button",
             }, "Logout"),
           ]),
-          m.component(List),
+          m.component(List, store.list),
         ] :
         m.component(Auth)
       )

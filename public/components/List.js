@@ -1,6 +1,5 @@
 import m from "mithril";
 import Component from "../Component";
-import Store from "../store";
 import Directory from "./Directory";
 import File from "./File";
 import { marginSize, borderRadius, boxShadow } from "../css";
@@ -51,6 +50,12 @@ export default class List extends Component {
 
       border: "1px solid #BDC3C7",
     },
+
+    noResult: {
+      inherit: "error",
+      margin: marginSize,
+    },
+
   };
 
   constructor() {
@@ -63,7 +68,35 @@ export default class List extends Component {
     this.path = newPath;
   }
 
-  render() {
+  updatePath(list) {
+    const findFileByName = (list, name) => {
+      for (const file of list) {
+        if (file.name === name) return file;
+      }
+    };
+
+    for (let i = 0; i < this.path.length; i += 1) {
+      const newChild = findFileByName(list, this.path[i].name);
+      if (newChild) {
+        this.path[i] = newChild;
+        list = newChild.children;
+        if (!list) break;
+      }
+      else {
+        this.path.length = i;
+        break;
+      }
+    }
+
+    while (list && list.length === 1) {
+      this.path.push(list[0]);
+      list = list[0].children;
+    }
+  }
+
+  render(list) {
+
+    this.updatePath(list);
 
     const renderPath = this.path.slice();
     if (this.previousPath && this.previousPath.length > this.path.length) {
@@ -160,10 +193,12 @@ export default class List extends Component {
 
     return (
       m("div", { ss: "root" },
-        m("div", { ss: "container", config },
-          renderColumn({ children: Store.list }, 0),
-          renderPath.map((file, i) => renderColumn(file, i + 1)),
-        )
+        list.length ?
+          m("div", { ss: "container", config },
+            renderColumn({ children: list }, 0),
+            renderPath.map((file, i) => renderColumn(file, i + 1)),
+          ) :
+          m("div", { ss: "noResult" }, "No result"),
       )
     );
   }
