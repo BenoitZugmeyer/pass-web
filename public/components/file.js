@@ -145,9 +145,9 @@ export default class File extends Component {
   }
 
   renderLoaded() {
-    var lines = this.content().split("\n");
-    var passwordLine = lines[0];
-    var rest = lines.slice(1).join("\n");
+    const lines = this.content().split("\n");
+    const passwordLine = lines[0];
+    const rest = lines.slice(1).join("\n");
 
     return [
       m("div",
@@ -160,7 +160,9 @@ export default class File extends Component {
           "\u2022".repeat(10),
           m("span", {
             ss: "passwordLine",
-            config: (element) => { this.passwordLineElement = element; },
+            config: (element) => {
+              this.passwordLineElement = element;
+            },
           }, passwordLine),
         ]),
       ),

@@ -18,7 +18,7 @@ function formatMessage(msg) {
 function makeLogger(level_) {
   return function (msg) {
     if (level_ >= level) {
-      let result = '';
+      let result = "";
       if (Array.isArray(msg) && msg.raw) { // Template string
         for (let i = 0; i < msg.length; i++) {
           if (i) result += formatMessage(arguments[i]);

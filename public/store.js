@@ -4,8 +4,8 @@ function emit() {
   m.redraw();
 }
 
-var list = false;
-var passphrase = false;
+let list = false;
+let passphrase = false;
 
 export default {
 

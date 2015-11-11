@@ -14,7 +14,7 @@ export function emptyClipboard() {
   select(spaceElement);
 
   try {
-    return document.execCommand('copy');
+    return document.execCommand("copy");
   }
   catch (e) {
     return false;
@@ -27,7 +27,7 @@ export function emptyClipboard() {
 export function select(element) {
   if (!element) return;
   unselect();
-  var range = document.createRange();
+  const range = document.createRange();
   range.selectNode(element);
   window.getSelection().addRange(range);
 }

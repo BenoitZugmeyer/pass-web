@@ -76,7 +76,7 @@ export default class Component {
   static get controller() {
     Object.defineProperty(this, "controller", {
       value: (...args) => {
-        var result = new this(...args);
+        const result = new this(...args);
         result.args = args;
         return result;
       },
