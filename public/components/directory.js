@@ -5,6 +5,14 @@ import Line from "./line";
 export default class Directory extends Component {
 
   render({ children, activeChild, onActiveChildChanged=() => {} }) {
+
+    children.sort((a, b) => {
+      // Sort directories first
+      if (Boolean(a.children) ^ Boolean(b.children)) return a.children ? -1 : 1;
+      // Then sort by name
+      return a.name < b.name ? -1 : 1;
+    });
+
     return m("div", children.map((child) => {
       const isDirectory = child.children;
       return m.component(
