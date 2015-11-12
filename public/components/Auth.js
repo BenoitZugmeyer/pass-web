@@ -18,6 +18,7 @@ export default class Auth extends Component {
     textField: {
       inherit: "textField",
       marginRight: marginSize,
+      marginBottom: marginSize,
     },
 
     error: {
@@ -56,6 +57,7 @@ export default class Auth extends Component {
 
         m("button", { ss: "button", disabled: this.loading() }, "Login"),
 
+        process.env.NODE_ENV === "demo" && m("div", "Hint: the demo passphrase is 'demo'."),
       ])
     );
   }

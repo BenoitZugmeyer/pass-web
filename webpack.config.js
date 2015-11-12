@@ -23,6 +23,11 @@ let config = {
       hash: true,
       template: getPath("public/index.html"),
     }),
+    new webpack.DefinePlugin({
+      "process.env": {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || ""),
+      },
+    }),
   ],
   module: {
     loaders: [
@@ -41,7 +46,7 @@ let config = {
   },
 };
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "demo") {
   config.plugins.push(
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({

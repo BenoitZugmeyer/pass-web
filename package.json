@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . || true",
-    "postinstall": "NODE_ENV=production webpack"
+    "postinstall": "NODE_ENV=production webpack",
+    "update-demo": "NODE_ENV=demo webpack && git checkout gh-pages && mv dist/* . && rm -r dist && git add -u && git commit -m 'Update demo'"
   },
   "bin": {
     "pass-web": "server/index.js"
