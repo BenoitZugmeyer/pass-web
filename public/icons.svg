@@ -72,6 +72,40 @@
   </metadata>
   <g
      inkscape:groupmode="layer"
+     id="search"
+     inkscape:label="Search"
+     style="display:inline">
+    <circle
+       style="fill:none;fill-opacity:1;stroke:#bdc3c7;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       r="5"
+       cy="8"
+       cx="8" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#bdc3c7;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 12,12 5,5"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="clean"
+     inkscape:label="Clean"
+     style="display:inline">
+    <path
+       id="path4165"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#bdc3c7;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="m 7,7 6,6"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+    <path
+       id="path4165-0"
+       style="display:inline;fill:none;fill-rule:evenodd;stroke:#bdc3c7;stroke-width:3;stroke-linecap:round;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 13,7 7,13"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
      id="file"
      inkscape:label="File"
      style="display:inline"
