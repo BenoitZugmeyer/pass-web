@@ -4,9 +4,16 @@ A web interface for [pass](http://www.passwordstore.org/) (password-store).
 
 ## Install
 
+For those lucky enough to run Arch Linux, you should install it [from
+AUR](https://aur.archlinux.org/packages/pass-web)
+
+For other, you can install it via npm:
+
 ```
 $ npm install -g pass-web
 ```
+
+You will need nodejs 5+ to run it.
 
 ## Usage
 
