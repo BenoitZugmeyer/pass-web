@@ -1,6 +1,6 @@
 {
   "name": "pass-web",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.3",
   "description": "A web interface for pass / passwordstore",
   "main": "server/index.js",
   "scripts": {
