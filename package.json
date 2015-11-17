@@ -1,7 +1,7 @@
 {
   "name": "pass-web",
   "version": "1.0.0-beta.3",
-  "description": "A web interface for pass / passwordstore",
+  "description": "A web interface for pass (password-store)",
   "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -38,5 +38,10 @@
     "svgo": "^0.6.0",
     "svgo-loader": "^1.1.0",
     "webpack": "^1.12.2"
-  }
+  },
+  "keywords": [
+    "pass",
+    "passwordstore",
+    "password-store"
+  ]
 }
