@@ -6,13 +6,13 @@ import { marginSize, borderRadius, boxShadow } from "../css";
 
 
 const transitionDelay = 0.5; // second
-const maxHeight = "400px";
 const empty = {};
 
 export default class List extends Component {
 
   static styles = {
     root: {
+      display: "flex",
       borderRadius,
       backgroundColor: "#ECF0F1",
       boxShadow,
@@ -20,25 +20,25 @@ export default class List extends Component {
     },
 
     container: {
+      flex: "1",
       display: "flex",
-      maxHeight,
       marginLeft: "-2px", // Hide left separator
     },
 
     column: {
       position: "relative",
-      display: "inline-block",
+      display: "flex",
       transition: `width ${transitionDelay}s`,
       verticalAlign: "top",
       overflow: "hidden",
     },
 
     columnContent: {
+      flex: "1",
       padding: `${marginSize}`,
       paddingLeft: `calc(${marginSize} + 2px)`,
       overflowY: "auto",
       overflowX: "hidden",
-      maxHeight,
       boxSizing: "border-box",
     },
 

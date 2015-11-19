@@ -19,7 +19,7 @@ export default class App extends Component {
       position: "relative",
       boxSizing: "border-box",
 
-      minHeight: "100vh",
+      height: "100vh",
       maxWidth: "40em",
       margin: "auto",
       padding: "12px",
