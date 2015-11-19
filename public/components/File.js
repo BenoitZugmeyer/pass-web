@@ -149,7 +149,7 @@ export default class File extends Component {
 
     return [
       m("div",
-        m("span", {
+        passwordLine && m("span", {
           ss: "passwordSelector",
           onmouseover: ::this.selectPassword,
           onclick: ::this.selectPassword,
