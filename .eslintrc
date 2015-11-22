@@ -10,7 +10,12 @@ rules:
   quotes: 1
   brace-style: [1, "stroustrup"]
 
+  filenames/filenames: [1, null, "match-exported-or-regex"]
+
 env:
-    node: true
+  node: true
+
+plugins:
+  - filenames
 
 # vim: ft=yaml
