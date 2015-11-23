@@ -130,9 +130,7 @@ export default class File extends Component {
     this.error = m.prop(false);
     this.loading = m.prop(true);
     get(path)
-      // TODO use this when https://github.com/babel/babel/issues/2942 is fixed/released
-      //::finally_(() => this.loading(false))
-      ::finally_(this.loading.bind(this, false))
+      ::finally_(() => this.loading(false))
       .then(this.content, this.error);
   }
 
