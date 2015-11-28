@@ -1,6 +1,7 @@
 import m from "mithril";
 import { get } from "../actions";
 import Component from "../Component";
+import CopyIcon from "./CopyIcon";
 import { select, unselect } from "../selection";
 import { finally_ } from "../promiseUtil";
 import { marginSize } from "../css";
@@ -163,6 +164,7 @@ export default class File extends Component {
             },
           }, passwordLine),
         ]),
+        m.component(CopyIcon, { content: passwordLine }),
       ),
       m("div", { ss: "rest" }, renderer.render(rest.trimRight())),
     ];

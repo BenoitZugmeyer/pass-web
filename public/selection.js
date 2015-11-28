@@ -1,17 +1,17 @@
 
-let spaceElement;
+let copyElement;
 
-export function emptyClipboard() {
-  if (!spaceElement) {
-    spaceElement = document.createElement("div");
-    spaceElement.style.opacity = "0";
-    spaceElement.style.position = "absolute";
-    spaceElement.style.top = "0";
-    spaceElement.textContent = ".";
-    document.body.appendChild(spaceElement);
+export function copy(content) {
+  if (!copyElement) {
+    copyElement = document.createElement("div");
+    copyElement.style.opacity = "0";
+    copyElement.style.position = "absolute";
+    copyElement.style.top = "0";
+    document.body.appendChild(copyElement);
   }
 
-  select(spaceElement);
+  copyElement.textContent = content;
+  select(copyElement);
 
   try {
     return document.execCommand("copy");
@@ -22,6 +22,10 @@ export function emptyClipboard() {
   finally {
     unselect();
   }
+}
+
+export function emptyClipboard() {
+  copy(".");
 }
 
 export function select(element) {
