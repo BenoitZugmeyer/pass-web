@@ -7,6 +7,7 @@ const path = require("path");
 const express = require("express");
 const parseArgs = require("minimist");
 const bodyParser = require("body-parser");
+const httpAuth = require('http-auth');
 const promiseUtil = require("./promiseUtil");
 const Keys = require("./Keys");
 const log = require("./log");
@@ -36,7 +37,6 @@ const listDirectory = promiseUtil.wrapRun(function* (root, filter) {
 
   return result.filter((file) => file);
 });
-
 
 function validDirectoryName(name) {
   return !name.startsWith(".");
@@ -156,7 +156,6 @@ function apiRouter(conf) {
   }));
 
   router.post("/get", wrap(function* (req, res) {
-
     const filePath = yield getSecurePath(req.body.path);
 
     // Always authenticate. We shouldn't throw any exception related to the file path before
@@ -177,10 +176,15 @@ function apiRouter(conf) {
 
 function launchApp(conf) {
   const app = express();
-
+  const basicAuth = httpAuth.basic({
+    realm: "Log in to pass-web interface",
+    file: args.htpasswd // gevorg:gpass, Sarah:testpass ...
+  });
+  
+  app.use(httpAuth.connect(basicAuth));
   app.use(args.urlpre || "/", express.static(path.join(__dirname, "..", "dist")));
   app.use((args.urlpre || "") + "/api", apiRouter(conf));
-  
+
   app.httpsListen = function() {
     var server = https.createServer({
       key: fs.readFileSync(args.key),
@@ -188,7 +192,7 @@ function launchApp(conf) {
     }, this);
     return server.listen.apply(server, arguments);
   };
-  
+
   app.httpsListen(conf.port, "localhost", function () {
     const address = this.address();
     log.info`Server listening on https://${address.address}:${address.port}${args.urlpre}`;
@@ -197,14 +201,15 @@ function launchApp(conf) {
 
 const args = parseArgs(process.argv, {
   alias: {
-    debug: [ "d" ],
-    store: [ "s" ],
-    port: [ "p" ],
-    key: [ "k" ],
-    cert: [ "c" ],
-    urlpre: [ "u" ]
+    debug:    [ "d" ],
+    store:    [ "s" ],
+    port:     [ "p" ],
+    urlpre:   [ "u" ],
+    key:      [ "k" ],
+    cert:     [ "c" ],
+    htpasswd: [ "h" ]
   },
-  boolean: [ "debug" ],
+  boolean:  [ "debug" ],
 });
 
 promiseUtil.run(function* () {
