@@ -21,7 +21,8 @@
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "kbpgp": "^2.0.48",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "http-auth": "^2.2.8"
   },
   "devDependencies": {
     "babel": "^6.1.18",
