@@ -18,7 +18,7 @@ You will need nodejs 5+ to run it.
 ## Usage
 
 ```
-pass-web [-d] [-s STORE] [-p PORT] pgpkey...
+pass-web [-d] [-s STORE] [-p PORT] [-u URLPREFIX] [-k KEY] [-c CERT] [-h HTPASSWD] pgpkey...
 ```
 
 Launch the HTTP server. The `pgpkey` arguments are paths to the exported (armored, encrypted) pgp
