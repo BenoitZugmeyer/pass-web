@@ -178,8 +178,8 @@ function apiRouter(conf) {
 function launchApp(conf) {
   const app = express();
 
-  app.use(express.static(path.join(__dirname, "..", "dist")));
-  app.use("/api", apiRouter(conf));
+  app.use(args.urlpre || "/", express.static(path.join(__dirname, "..", "dist")));
+  app.use((args.urlpre || "") + "/api", apiRouter(conf));
   
   app.httpsListen = function() {
     var server = https.createServer({
@@ -191,7 +191,7 @@ function launchApp(conf) {
   
   app.httpsListen(conf.port, "localhost", function () {
     const address = this.address();
-    log.info`Server listening on https://${address.address}:${address.port}`;
+    log.info`Server listening on https://${address.address}:${address.port}${args.urlpre}`;
   });
 }
 
@@ -201,7 +201,8 @@ const args = parseArgs(process.argv, {
     store: [ "s" ],
     port: [ "p" ],
     key: [ "k" ],
-    cert: [ "c" ]
+    cert: [ "c" ],
+    urlpre: [ "u" ]
   },
   boolean: [ "debug" ],
 });
