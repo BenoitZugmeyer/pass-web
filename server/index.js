@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 "use strict";
 
+const https = require('https');
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
@@ -179,10 +180,18 @@ function launchApp(conf) {
 
   app.use(express.static(path.join(__dirname, "..", "dist")));
   app.use("/api", apiRouter(conf));
-
-  app.listen(conf.port, "localhost", function () {
+  
+  app.httpsListen = function() {
+    var server = https.createServer({
+      key: fs.readFileSync(args.key),
+      cert: fs.readFileSync(args.cert)
+    }, this);
+    return server.listen.apply(server, arguments);
+  };
+  
+  app.httpsListen(conf.port, "localhost", function () {
     const address = this.address();
-    log.info`Server listening on http://${address.address}:${address.port}`;
+    log.info`Server listening on https://${address.address}:${address.port}`;
   });
 }
 
@@ -191,6 +200,8 @@ const args = parseArgs(process.argv, {
     debug: [ "d" ],
     store: [ "s" ],
     port: [ "p" ],
+    key: [ "k" ],
+    cert: [ "c" ]
   },
   boolean: [ "debug" ],
 });
