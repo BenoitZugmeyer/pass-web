@@ -2,7 +2,8 @@
 
 const DEBUG = 1;
 const INFO = 2;
-const ERROR = 3;
+const WARNING = 3;
+const ERROR = 4;
 
 let level = DEBUG;
 
@@ -15,7 +16,7 @@ function formatMessage(msg) {
   return String(msg);
 }
 
-function makeLogger(level_) {
+function makeLogger(levelLabel, level_) {
   return function (msg) {
     if (level_ >= level) {
       let result = "";
@@ -28,18 +29,19 @@ function makeLogger(level_) {
       else {
         result = formatMessage(msg);
       }
-      process.stderr.write(result);
-      process.stderr.write("\n");
+      process.stderr.write(`${levelLabel}: ${result}\n`);
     }
   }
 }
 
 module.exports = {
   setLevel,
-  debug: makeLogger(DEBUG),
-  info: makeLogger(INFO),
-  error: makeLogger(ERROR),
+  debug: makeLogger("DEBUG", DEBUG),
+  info: makeLogger("INFO", INFO),
+  warning: makeLogger("WARNING", WARNING),
+  error: makeLogger("ERROR", ERROR),
   DEBUG,
   INFO,
+  WARNING,
   ERROR,
 };

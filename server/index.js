@@ -200,10 +200,13 @@ function launchApp(conf) {
     }, app);
   }
   else {
+    if (conf.address !== "localhost" && conf.address !== "127.0.0.1") {
+      log.warning`Serving on a non-local address in non-secure HTTP is highly discouraged.`;
+    }
     server = http.createServer(app);
   }
 
-  server.listen(conf.port, "localhost", function () {
+  server.listen(conf.port, conf.address, function () {
     const address = this.address();
     const scheme = secureServer ? "https" : "http";
     log.info`Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`;
@@ -229,6 +232,9 @@ Options:
 
     -p PORT, --port PORT
         port to use, defaults to 3000
+
+    -a ADDRESS, --address ADDRESS
+        address to use, defaults to 127.0.0.1
 
     -h, --help
         print this help and quit
@@ -266,6 +272,7 @@ promiseUtil.run(function* () {
       debug:    [ "d" ],
       store:    [ "s" ],
       port:     [ "p" ],
+      address:  [ "a" ],
       help:     [ "h" ],
     },
     boolean:  [ "debug" ],
@@ -294,6 +301,7 @@ promiseUtil.run(function* () {
     passwordStorePath,
     keys,
     port: args.port || 3000,
+    address: args.address || "127.0.0.1",
     key: args.key || false,
     cert: args.cert || false,
     htpasswd: args.htpasswd || false,
