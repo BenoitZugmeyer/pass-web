@@ -177,12 +177,16 @@ function apiRouter(conf) {
 
 function launchApp(conf) {
   const app = express();
-  const basicAuth = httpAuth.basic({
-    realm: "Log in to pass-web interface",
-    file: args.htpasswd, // gevorg:gpass, Sarah:testpass
-  });
 
-  app.use(httpAuth.connect(basicAuth));
+  if (conf.htpasswd) {
+    const basicAuth = httpAuth.basic({
+      realm: "Log in to pass-web interface",
+      file: conf.htpasswd,
+    });
+
+    app.use(httpAuth.connect(basicAuth));
+  }
+
   app.use(args.urlpre || "/", express.static(path.join(__dirname, "..", "dist")));
   app.use((args.urlpre || "") + "/api", apiRouter(conf));
 
@@ -235,6 +239,7 @@ promiseUtil.run(function* () {
     port: args.port || 3000,
     key: args.key || false,
     cert: args.cert || false,
+    htpasswd: args.htpasswd || false,
   });
 })
 .catch(log.error);
