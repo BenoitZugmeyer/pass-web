@@ -2,6 +2,7 @@
 "use strict";
 
 const https = require("https");
+const http = require("http");
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
@@ -185,17 +186,23 @@ function launchApp(conf) {
   app.use(args.urlpre || "/", express.static(path.join(__dirname, "..", "dist")));
   app.use((args.urlpre || "") + "/api", apiRouter(conf));
 
-  app.httpsListen = function() {
-    const server = https.createServer({
-      key: fs.readFileSync(args.key),
-      cert: fs.readFileSync(args.cert),
-    }, this);
-    return server.listen.apply(server, arguments);
-  };
+  const secureServer = Boolean(conf.key && conf.cert);
+  let server;
 
-  app.httpsListen(conf.port, "localhost", function () {
+  if (secureServer) {
+    server = https.createServer({
+      key: fs.readFileSync(conf.key),
+      cert: fs.readFileSync(conf.cert),
+    }, app);
+  }
+  else {
+    server = http.createServer(app);
+  }
+
+  server.listen(conf.port, "localhost", function () {
     const address = this.address();
-    log.info`Server listening on https://${address.address}:${address.port}${args.urlpre}`;
+    const scheme = secureServer ? "https" : "http";
+    log.info`Server listening on ${scheme}://${address.address}:${address.port}${args.urlpre}`;
   });
 }
 
@@ -226,6 +233,8 @@ promiseUtil.run(function* () {
     passwordStorePath,
     keys,
     port: args.port || 3000,
+    key: args.key || false,
+    cert: args.cert || false,
   });
 })
 .catch(log.error);
