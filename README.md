@@ -17,40 +17,7 @@ You will need nodejs 5+ to run it.
 
 ## Usage
 
-```
-pass-web [OPTION]... PGPKEY...
-```
-
-Launch the HTTP server. The `PGPKEY` arguments are paths to the exported (armored, encrypted) pgp
-secret keys.
-
-The server will use HTTPS only if the options `--key` and `--cert` are provided.
-
-Options:
-
-* `-d`, `--debug`: log additional information, useful for debugging purposes
-* `-s STOREPATH`, `--store STOREPATH`: path of the password-store directory, defaults to
-  `~/.password-store`
-* `-p PORT`, `--port PORT`: port to use, defaults to `3000`
-* `--url-base-dir URLBASEDIR`: url subdirectory being used to serve the app, defaults to `/`. For
-  example, `/pass-web` for a server at `https://example.com/pass-web`
-* `--key KEY`: path to key file to use for SSL. If omitted, serves without SSL
-* `--cert CERT`: path to certificate file to use for SSL. If omitted, serves without SSL
-* `--htpasswd HTPASSWD`: htpasswd file to use for additional HTTP basic authentication. If omitted,
-  no authentication will be used
-
-## Examples
-
-```
-$ pass-web -p 9082 <(gpg --export-secret-keys -a)
-$ pass-web \
-    -p 8081 \
-    -s /path/to/pass/store \
-    --url-base-dir /pass-web
-    --key /path/to/ssl/key \
-    --cert /path/to/ssl/cert secretKeyFile \
-    --htpasswd /path/to/htpasswd
-```
+The executable is called `pass-web`. Use `pass-web --help` to get help.
 
 ## HTTPS concerns
 
