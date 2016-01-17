@@ -1,1 +1,4 @@
 *.key
+/*
+!/dist/
+!/server/
