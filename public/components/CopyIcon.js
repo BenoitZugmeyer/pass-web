@@ -34,7 +34,7 @@ export default class CopyIcon extends Component {
         "stroke-width": "1.5",
         "stroke-linecap": "round",
         "stroke-linejoin": "round",
-      })
+      }),
     ]);
   }
 

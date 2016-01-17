@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 "use strict";
 
-const https = require('https');
+const https = require("https");
 const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const parseArgs = require("minimist");
 const bodyParser = require("body-parser");
-const httpAuth = require('http-auth');
+const httpAuth = require("http-auth");
 const promiseUtil = require("./promiseUtil");
 const Keys = require("./Keys");
 const log = require("./log");
@@ -178,17 +178,17 @@ function launchApp(conf) {
   const app = express();
   const basicAuth = httpAuth.basic({
     realm: "Log in to pass-web interface",
-    file: args.htpasswd // gevorg:gpass, Sarah:testpass ...
+    file: args.htpasswd, // gevorg:gpass, Sarah:testpass
   });
-  
+
   app.use(httpAuth.connect(basicAuth));
   app.use(args.urlpre || "/", express.static(path.join(__dirname, "..", "dist")));
   app.use((args.urlpre || "") + "/api", apiRouter(conf));
 
   app.httpsListen = function() {
-    var server = https.createServer({
+    const server = https.createServer({
       key: fs.readFileSync(args.key),
-      cert: fs.readFileSync(args.cert)
+      cert: fs.readFileSync(args.cert),
     }, this);
     return server.listen.apply(server, arguments);
   };
@@ -207,7 +207,7 @@ const args = parseArgs(process.argv, {
     urlpre:   [ "u" ],
     key:      [ "k" ],
     cert:     [ "c" ],
-    htpasswd: [ "h" ]
+    htpasswd: [ "h" ],
   },
   boolean:  [ "debug" ],
 });
