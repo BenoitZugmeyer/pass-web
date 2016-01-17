@@ -211,6 +211,11 @@ function launchApp(conf) {
     const scheme = secureServer ? "https" : "http";
     log.info`Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`;
   });
+
+  return new Promise((resolve, reject) => {
+    server.on("listening", resolve);
+    server.on("error", reject);
+  });
 }
 
 function printHelp() {
@@ -297,7 +302,7 @@ promiseUtil.run(function* () {
 
   log.setLevel(args.debug ? log.DEBUG : log.INFO);
 
-  launchApp({
+  yield launchApp({
     passwordStorePath,
     keys,
     port: args.port || 3000,
