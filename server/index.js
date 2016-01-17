@@ -187,8 +187,8 @@ function launchApp(conf) {
     app.use(httpAuth.connect(basicAuth));
   }
 
-  app.use(conf.urlBaseDir + "/", express.static(path.join(__dirname, "..", "dist")));
-  app.use(conf.urlBaseDir + "/api", apiRouter(conf));
+  app.use(conf.urlBaseDir, express.static(path.join(__dirname, "..", "dist")));
+  app.use(conf.urlBaseDir + "api", apiRouter(conf));
 
   const secureServer = Boolean(conf.key && conf.cert);
   let server;
@@ -302,6 +302,9 @@ promiseUtil.run(function* () {
 
   log.setLevel(args.debug ? log.DEBUG : log.INFO);
 
+  const urlBaseDirArg = (args["url-base-dir"] || "").replace(/^\/+|\/+$/g, "");
+  const urlBaseDir = urlBaseDirArg ? `/${urlBaseDirArg}/` : "/";
+
   yield launchApp({
     passwordStorePath,
     keys,
@@ -310,7 +313,7 @@ promiseUtil.run(function* () {
     key: args.key || false,
     cert: args.cert || false,
     htpasswd: args.htpasswd || false,
-    urlBaseDir: "/" + (args["url-base-dir"] || "").replace(/^\/+|\/+$/g, ""),
+    urlBaseDir,
   });
 })
 .catch(log.error);
