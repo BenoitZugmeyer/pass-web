@@ -210,20 +210,21 @@ function launchApp(conf) {
   });
 }
 
-const args = parseArgs(process.argv, {
-  alias: {
-    debug:    [ "d" ],
-    store:    [ "s" ],
-    port:     [ "p" ],
-    "url-base-dir":   [ "u" ],
-    key:      [ "k" ],
-    cert:     [ "c" ],
-    htpasswd: [ "h" ],
-  },
-  boolean:  [ "debug" ],
-});
-
 promiseUtil.run(function* () {
+
+  const args = parseArgs(process.argv, {
+    alias: {
+      debug:    [ "d" ],
+      store:    [ "s" ],
+      port:     [ "p" ],
+      "url-base-dir":   [ "u" ],
+      key:      [ "k" ],
+      cert:     [ "c" ],
+      htpasswd: [ "h" ],
+    },
+    boolean:  [ "debug" ],
+  });
+
   const passwordStorePath = yield realpath(args.store || path.join(process.env.HOME, ".password-store"));
   const passwordStoreStat = yield fileStat(passwordStorePath);
   if (!passwordStoreStat.isDirectory()) throw new Error(`${passwordStorePath} is not a directory`);
