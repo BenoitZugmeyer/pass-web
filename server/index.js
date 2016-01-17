@@ -217,10 +217,6 @@ promiseUtil.run(function* () {
       debug:    [ "d" ],
       store:    [ "s" ],
       port:     [ "p" ],
-      "url-base-dir":   [ "u" ],
-      key:      [ "k" ],
-      cert:     [ "c" ],
-      htpasswd: [ "h" ],
     },
     boolean:  [ "debug" ],
   });
