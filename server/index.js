@@ -233,6 +233,9 @@ Options:
     -h, --help
         print this help and quit
 
+    --version
+        print the version and quit
+
     --url-base-dir URLBASEDIR
         url subdirectory being used to serve the app, defaults to /. For example, /pass-web for a server at https://example.com/pass-web
 
@@ -251,6 +254,11 @@ Usage example to makes bash-compatible shells temporarily export gpg keys:
 `);
 }
 
+function printVersion() {
+  const pkg = require("../package.json");
+  process.stdout.write(`${pkg.name} ${pkg.version}\n`);
+}
+
 promiseUtil.run(function* () {
 
   const args = parseArgs(process.argv, {
@@ -265,6 +273,11 @@ promiseUtil.run(function* () {
 
   if (args.help) {
     printHelp();
+    return;
+  }
+
+  if (args.version) {
+    printVersion();
     return;
   }
 
