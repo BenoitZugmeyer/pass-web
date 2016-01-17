@@ -187,8 +187,8 @@ function launchApp(conf) {
     app.use(httpAuth.connect(basicAuth));
   }
 
-  app.use(args.urlpre || "/", express.static(path.join(__dirname, "..", "dist")));
-  app.use((args.urlpre || "") + "/api", apiRouter(conf));
+  app.use(conf.urlBaseDir + "/", express.static(path.join(__dirname, "..", "dist")));
+  app.use(conf.urlBaseDir + "/api", apiRouter(conf));
 
   const secureServer = Boolean(conf.key && conf.cert);
   let server;
@@ -206,7 +206,7 @@ function launchApp(conf) {
   server.listen(conf.port, "localhost", function () {
     const address = this.address();
     const scheme = secureServer ? "https" : "http";
-    log.info`Server listening on ${scheme}://${address.address}:${address.port}${args.urlpre}`;
+    log.info`Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`;
   });
 }
 
@@ -215,7 +215,7 @@ const args = parseArgs(process.argv, {
     debug:    [ "d" ],
     store:    [ "s" ],
     port:     [ "p" ],
-    urlpre:   [ "u" ],
+    "url-base-dir":   [ "u" ],
     key:      [ "k" ],
     cert:     [ "c" ],
     htpasswd: [ "h" ],
@@ -240,6 +240,7 @@ promiseUtil.run(function* () {
     key: args.key || false,
     cert: args.cert || false,
     htpasswd: args.htpasswd || false,
+    urlBaseDir: "/" + (args["url-base-dir"] || "").replace(/^\/+|\/+$/g, ""),
   });
 })
 .catch(log.error);
