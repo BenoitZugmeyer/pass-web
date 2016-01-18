@@ -45,6 +45,10 @@ let config = {
           "svgo-loader?" + JSON.stringify(svgoConfig),
         ],
       },
+      {
+        test: /\.png$/,
+        loader: "file-loader?name=[path][name].[ext]?[hash]",
+      }
     ],
   },
 };

@@ -1,8 +1,16 @@
 import m from "mithril";
 
-function emit() {
-  m.redraw();
+const callbacks = [];
+
+function register(cb) {
+  callbacks.push(cb);
 }
+
+function emit() {
+  callbacks.forEach((cb) => cb());
+}
+
+register(() => m.redraw());
 
 let list = false;
 let passphrase = false;
@@ -34,5 +42,7 @@ export default {
   get list() {
     return list || [];
   },
+
+  register,
 
 };
