@@ -24,6 +24,7 @@ let config = {
     new HtmlWebpackPlugin({
       hash: true,
       template: getPath("public/index.html"),
+      favicon: getPath("public/favicon.png"),
     }),
     new webpack.DefinePlugin({
       "process.env": {

@@ -4,7 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Pass</title>
-    <!-- TODO <link rel="shortcut icon" href=""> -->
+    {% if (o.htmlWebpackPlugin.files.favicon) { %}
+    <link rel="icon" href="{%=o.htmlWebpackPlugin.files.favicon%}">
+    {% } %}
   </head>
   <body>
     {% for (var chunk in o.htmlWebpackPlugin.files.chunks) { %}
