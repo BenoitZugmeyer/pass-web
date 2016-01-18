@@ -113,8 +113,8 @@ let fullList;
 export function signin(passphrase) {
   return call("list", { passphrase }).then((list) => {
     fullList = list;
-    store.setList(list);
     store.setPassphrase(passphrase);
+    store.setList(list);
   });
 }
 
