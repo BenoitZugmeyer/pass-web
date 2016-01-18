@@ -48,7 +48,7 @@ let config = {
       {
         test: /\.png$/,
         loader: "file-loader?name=[path][name].[ext]?[hash]",
-      }
+      },
     ],
   },
 };
