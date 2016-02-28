@@ -33,12 +33,15 @@ export default class App extends Component {
   };
 
   render() {
+    const isNewlyLogged = !this.wasLogged && store.loggedIn;
+    this.wasLogged = store.loggedIn;
+
     return (
       m("div",
         { ss: "root" },
         store.loggedIn ? [
           m("div", { ss: "header" }, [
-            m.component(Search, { onChange: search }),
+            m.component(Search, { onChange: search, focus: isNewlyLogged }),
             m("button", {
               onclick: stop(logout),
               ss: "button",

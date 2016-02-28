@@ -39,7 +39,7 @@ export default class Search extends Component {
 
   };
 
-  render({ onChange }) {
+  render({ onChange, focus }) {
     const triggerChange = () => {
       if (!onChange || !this.input) return;
       onChange(this.input.value);
@@ -58,6 +58,7 @@ export default class Search extends Component {
           ss: "textField",
           config: (el) => {
             this.input = el;
+            if (focus) el.focus();
           },
           onkeyup: triggerChange,
         }),

@@ -51,6 +51,9 @@ export default class Auth extends Component {
         m("input", {
           ss: "textField",
           type: "password",
+          config(el) {
+            el.focus();
+          },
           onchange: m.withAttr("value", this.passphrase),
           value: this.passphrase(),
         }),
