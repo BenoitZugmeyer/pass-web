@@ -23,8 +23,7 @@ let config = {
   plugins: [
     new HtmlWebpackPlugin({
       hash: true,
-      template: getPath("public/index.html"),
-      favicon: getPath("public/favicon.png"),
+      template: getPath("public/index.ejs"),
     }),
     new webpack.DefinePlugin({
       "process.env": {
