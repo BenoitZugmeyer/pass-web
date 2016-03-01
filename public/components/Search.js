@@ -1,11 +1,8 @@
 import m from "mithril";
-import Component from "../Component";
 import Icon from "./Icon";
-import { marginSize } from "../css";
+import { base, marginSize } from "../css";
 
-export default class Search extends Component {
-
-  static styles = {
+const ss = base.namespace("Search").add({
 
     root: {
       position: "relative",
@@ -37,9 +34,11 @@ export default class Search extends Component {
       pointerEvents: "initial",
     },
 
-  };
+});
 
-  render({ onChange, focus }) {
+export default {
+
+  view(controller, { onChange, focus }) {
     const triggerChange = () => {
       if (!onChange || !this.input) return;
       onChange(this.input.value);
@@ -53,19 +52,20 @@ export default class Search extends Component {
     const hasValue = Boolean(this.input && this.input.value);
 
     return (
-      m("div", { ss: "root" }, [
+      m("div", { className: ss.render("root") }, [
         m("input", {
-          ss: "textField",
+          className: ss.render("textField"),
           config: (el) => {
             this.input = el;
             if (focus) el.focus();
           },
           onkeyup: triggerChange,
         }),
-        m("div", { ss: ["button", hasValue && "buttonActive" ], onclick: emptyInput }, [
-          m.component(Icon, hasValue ? "clean" : "search", { ss: this.getStyle("searchIcon") }),
+        m("div", { className: ss.render(["button", hasValue && "buttonActive" ]), onclick: emptyInput }, [
+          m.component(Icon, hasValue ? "clean" : "search", { ss: ss.get("searchIcon") }),
         ]),
       ])
     );
-  }
+  },
+
 }

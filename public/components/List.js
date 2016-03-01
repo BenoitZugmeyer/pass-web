@@ -1,112 +1,109 @@
 import m from "mithril";
-import Component from "../Component";
 import Directory from "./Directory";
 import File from "./File";
-import { marginSize, borderRadius, boxShadow } from "../css";
+import { base, marginSize, borderRadius, boxShadow } from "../css";
 
 
 const transitionDelay = 0.5; // second
 const empty = {};
+const ss = base.namespace("List").add({
+  root: {
+    display: "flex",
+    borderRadius,
+    backgroundColor: "#ECF0F1",
+    boxShadow,
+    overflow: "hidden",
+  },
 
-export default class List extends Component {
+  container: {
+    flex: "1",
+    display: "flex",
+    marginLeft: "-2px", // Hide left separator
+  },
 
-  static styles = {
-    root: {
-      display: "flex",
-      borderRadius,
-      backgroundColor: "#ECF0F1",
-      boxShadow,
-      overflow: "hidden",
-    },
+  column: {
+    position: "relative",
+    display: "flex",
+    transition: `width ${transitionDelay}s`,
+    verticalAlign: "top",
+    overflow: "hidden",
+  },
 
-    container: {
-      flex: "1",
-      display: "flex",
-      marginLeft: "-2px", // Hide left separator
-    },
+  columnContent: {
+    flex: "1",
+    padding: `${marginSize}`,
+    paddingLeft: `calc(${marginSize} + 2px)`,
+    overflowY: "auto",
+    overflowX: "hidden",
+    boxSizing: "border-box",
+  },
 
-    column: {
-      position: "relative",
-      display: "flex",
-      transition: `width ${transitionDelay}s`,
-      verticalAlign: "top",
-      overflow: "hidden",
-    },
+  separator: {
+    position: "absolute",
+    left: "0",
+    top: marginSize,
+    bottom: marginSize,
 
-    columnContent: {
-      flex: "1",
-      padding: `${marginSize}`,
-      paddingLeft: `calc(${marginSize} + 2px)`,
-      overflowY: "auto",
-      overflowX: "hidden",
-      boxSizing: "border-box",
-    },
+    border: "1px solid #BDC3C7",
+  },
 
-    separator: {
-      position: "absolute",
-      left: "0",
-      top: marginSize,
-      bottom: marginSize,
+  noResult: {
+    inherit: "error",
+    margin: marginSize,
+  },
 
-      border: "1px solid #BDC3C7",
-    },
+});
 
-    noResult: {
-      inherit: "error",
-      margin: marginSize,
-    },
+export default {
 
-  };
-
-  constructor() {
-    super();
+  controller() {
     this.path = [];
-  }
-
-  setPath(newPath) {
-    this.previousPath = this.path.slice();
-    this.path = newPath;
-  }
-
-  updatePath(list) {
-    const findFileByName = (list, name) => {
-      for (const file of list) {
-        if (file.name === name) return file;
-      }
+    this.setPath = (newPath) => {
+      this.previousPath = this.path.slice();
+      this.path = newPath;
     };
 
-    for (let i = 0; i < this.path.length; i += 1) {
-      const newChild = findFileByName(list, this.path[i].name);
-      if (newChild) {
-        this.path[i] = newChild;
-        list = newChild.children;
-        if (!list) break;
+    this.updatePath = (list) => {
+      const findFileByName = (list, name) => {
+        for (const file of list) {
+          if (file.name === name) return file;
+        }
+      };
+
+      for (let i = 0; i < this.path.length; i += 1) {
+        const newChild = findFileByName(list, this.path[i].name);
+        if (newChild) {
+          this.path[i] = newChild;
+          list = newChild.children;
+          if (!list) break;
+        }
+        else {
+          this.path.length = i;
+          break;
+        }
       }
-      else {
-        this.path.length = i;
-        break;
+
+      while (list && list.length === 1) {
+        this.path.push(list[0]);
+        list = list[0].children;
       }
     }
 
-    while (list && list.length === 1) {
-      this.path.push(list[0]);
-      list = list[0].children;
-    }
-  }
+  },
 
-  render(list) {
+  view(controller, list) {
 
-    this.updatePath(list);
+    controller.updatePath(list);
 
-    const renderPath = this.path.slice();
-    if (this.previousPath && this.previousPath.length > this.path.length) {
-      const isSubpath = this.path[this.path.length - 1] === this.previousPath[this.path.length - 1];
-      for (const child of this.previousPath.slice(this.path.length)) {
+    const renderPath = controller.path.slice();
+    if (controller.previousPath && controller.previousPath.length > controller.path.length) {
+      const isSubpath = controller.path[controller.path.length - 1] === controller.previousPath[controller.path.length - 1];
+      for (const child of controller.previousPath.slice(controller.path.length)) {
         renderPath.push(isSubpath ? child : empty);
       }
-      clearTimeout(this.redrawTimer);
-      this.redrawTimer = setTimeout(() => {
-        this.previousPath = undefined;
+      clearTimeout(controller.redrawTimer);
+      controller.redrawTimer = setTimeout(() => {
+        controller.previousPath = undefined;
         m.redraw();
       }, transitionDelay * 1000);
     }
@@ -119,28 +116,28 @@ export default class List extends Component {
         children = m.component(Directory, {
           children: file.children,
           onActiveChildChanged: (child) => {
-            if (!child) this.setPath(columnPath);
-            else this.setPath([...columnPath, child]);
+            if (!child) controller.setPath(columnPath);
+            else controller.setPath([...columnPath, child]);
           },
-          activeChild: this.path[index],
+          activeChild: controller.path[index],
         });
       }
       else if (file !== empty) {
         children = m.component(File, { path: columnPath.map((f) => f.name) });
       }
 
-      if (this.previousPath && index > this.previousPath.length) {
+      if (controller.previousPath && index > controller.previousPath.length) {
         // New column, starts with an empty width
         width = "0";
       }
 
       return m("div", {
-        ss: "column",
+        className: ss.render("column"),
         style: { width },
       }, [
-        m("div", { ss: "separator" }),
+        m("div", { className: ss.render("separator") }),
         m("div", {
-          ss: "columnContent",
+          className: ss.render("columnContent"),
           key: file.name,
         }, children),
       ]);
@@ -149,7 +146,7 @@ export default class List extends Component {
     const config = (element) => {
 
       const columnWidth = 200;
-      const columnCount = this.path.length + 1;
+      const columnCount = controller.path.length + 1;
       const fullWidth = element.clientWidth;
       const nodes = Array.from(element.childNodes);
 
@@ -192,15 +189,15 @@ export default class List extends Component {
     };
 
     return (
-      m("div", { ss: "root" },
+      m("div", { className: ss.render("root") },
         list.length ?
-          m("div", { ss: "container", config },
+          m("div", { className: ss.render("container"), config },
             renderColumn({ children: list }, 0),
             renderPath.map((file, i) => renderColumn(file, i + 1)),
           ) :
-          m("div", { ss: "noResult" }, "No result"),
+          m("div", { className: ss.render("noResult") }, "No result"),
       )
     );
-  }
+  },
 
 }

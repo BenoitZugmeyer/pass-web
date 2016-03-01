@@ -1,11 +1,56 @@
 import m from "mithril";
 import { get } from "../actions";
-import Component from "../Component";
 import CopyIcon from "./CopyIcon";
 import { select, unselect } from "../selection";
 import { finally_ } from "../promiseUtil";
-import { marginSize } from "../css";
+import { base, marginSize } from "../css";
 
+const ss = base.namespace("File").add({
+  root: {
+    overflow: "hidden",
+  },
+
+  passwordSelector: {
+    display: "inline-block",
+    position: "relative",
+    lineHeight: "24px",
+    hover: {
+      backgroundColor: "#3498DB",
+    },
+  },
+
+  passwordLine: {
+    display: "block",
+    position: "absolute",
+    top: "0",
+    left: "0",
+    right: "0",
+    bottom: "0",
+    overflow: "hidden",
+    color: "transparent",
+    opacity: "0",
+    fontSize: "1000px",
+  },
+
+  rest: {
+    whiteSpace: "pre",
+    lineHeight: "24px",
+  },
+
+  button: {
+    inherit: "button",
+
+    marginLeft: marginSize,
+  },
+
+  link: {
+    color: "#2C3E50",
+    textDecoration: "none",
+    hover: {
+      textDecoration: "underline",
+    },
+  },
+});
 
 class Renderer {
 
@@ -58,7 +103,7 @@ const renderer = new Renderer();
 renderer.add(/\bhttps?:\/\/\S+/,
              (match) => {
                return m("a", {
-                 ss: "link",
+                 className: ss.render("link"),
                  href: match[0],
                  target: "_blank",
                }, match[0]);
@@ -67,7 +112,7 @@ renderer.add(/\bhttps?:\/\/\S+/,
 renderer.add(/\S+@\S+/,
              (match) => {
                return m("a", {
-                 ss: "link",
+                 className: ss.render("link"),
                  href: `mailto:${match[0]}`,
                  target: "_blank",
                }, match[0]);
@@ -76,108 +121,54 @@ renderer.add(/\S+@\S+/,
 renderer.add(/^[A-Z].*?:/,
              (match) => m("strong", match[0]));
 
-export default class File extends Component {
+export default {
 
-  static styles = {
-    root: {
-      overflow: "hidden",
-    },
-
-    passwordSelector: {
-      display: "inline-block",
-      position: "relative",
-      lineHeight: "24px",
-      hover: {
-        backgroundColor: "#3498DB",
-      },
-    },
-
-    passwordLine: {
-      display: "block",
-      position: "absolute",
-      top: "0",
-      left: "0",
-      right: "0",
-      bottom: "0",
-      overflow: "hidden",
-      color: "transparent",
-      opacity: "0",
-      fontSize: "1000px",
-    },
-
-    rest: {
-      whiteSpace: "pre",
-      lineHeight: "24px",
-    },
-
-    button: {
-      inherit: "button",
-
-      marginLeft: marginSize,
-    },
-
-    link: {
-      color: "#2C3E50",
-      textDecoration: "none",
-      hover: {
-        textDecoration: "underline",
-      },
-    },
-  };
-
-  constructor({ path }) {
-    super();
+  controller({ path }) {
     this.content = m.prop("");
     this.error = m.prop(false);
     this.loading = m.prop(true);
     get(path)
       ::finally_(() => this.loading(false))
       .then(this.content, this.error);
-  }
+  },
 
-  selectPassword() {
-    select(this.passwordLineElement);
-  }
-
-  unselectPassword() {
-    unselect();
-  }
-
-  renderLoaded() {
-    const lines = this.content().split("\n");
+  renderLoaded(controller) {
+    const lines = controller.content().split("\n");
     const passwordLine = lines[0];
     const rest = lines.slice(1).join("\n");
+    let passwordLineElement;
+    const selectPassword = () => select(passwordLineElement);
 
     return [
       m("div",
         passwordLine && m("span", {
-          ss: "passwordSelector",
-          onmouseover: ::this.selectPassword,
-          onclick: ::this.selectPassword,
-          onmouseout: ::this.unselectPassword,
+          className: ss.render("passwordSelector"),
+          onmouseover: selectPassword,
+          onclick: selectPassword,
+          onmouseout: unselect,
         }, [
           "\u2022".repeat(10),
           m("span", {
-            ss: "passwordLine",
+            className: ss.render("passwordLine"),
             config: (element) => {
-              this.passwordLineElement = element;
+              passwordLineElement = element;
             },
           }, passwordLine),
         ]),
         m.component(CopyIcon, { content: passwordLine }),
       ),
-      m("div", { ss: "rest" }, renderer.render(rest.trimRight())),
+      m("div", { className: ss.render("rest") }, renderer.render(rest.trimRight())),
     ];
-  }
+  },
 
-  render() {
+  view(controller) {
     return (
-      m("div", { ss: "root" }, [
-        this.loading() ? m("div", "Loading...") :
-        this.error() ? m("div", { ss: "error" }, "Error: ", this.error().message) :
-          this.renderLoaded(),
+      m("div", { className: ss.render("root") }, [
+        controller.loading() ? m("div", "Loading...") :
+        controller.error() ? m("div", { className: ss.render("error") }, "Error: ", controller.error().message) :
+          this.renderLoaded(controller),
       ])
     );
-  }
+  },
 
 }

@@ -1,82 +1,80 @@
 import m from "mithril";
-import Component from "../Component";
 import Icon from "./Icon";
 import { stop } from "../domUtil";
-import { marginSize, borderRadius } from "../css";
+import { base, marginSize, borderRadius } from "../css";
 
 const background = "236, 240, 241";
 const activeBackground = "189, 195, 199";
+const ss = base.namespace("Line").add({
 
-export default class Line extends Component {
+  root: {
+    position: "relative",
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    borderRadius,
+    padding: `2px ${marginSize}`,
+  },
 
-  static styles = {
+  active: {
+    backgroundColor: `rgb(${activeBackground})`,
+  },
 
-    root: {
-      position: "relative",
-      cursor: "pointer",
-      whiteSpace: "nowrap",
-      overflow: "hidden",
-      borderRadius,
-      padding: `2px ${marginSize}`,
-    },
+  icon: {
+    marginRight: marginSize,
+  },
 
-    active: {
-      backgroundColor: `rgb(${activeBackground})`,
-    },
+  shadow: {
+    position: "absolute",
+    top: borderRadius,
+    bottom: borderRadius,
+    right: 0,
+    width: marginSize,
 
-    icon: {
-      marginRight: marginSize,
-    },
+    background: `linear-gradient(
+    to right,
+    rgba(${background}, 0) 0%,
+    rgba(${background}, 1) 50%,
+    rgba(${background}, 1) 100%
+    )`,
+  },
 
-    shadow: {
-      position: "absolute",
-      top: borderRadius,
-      bottom: borderRadius,
-      right: 0,
-      width: marginSize,
+  activeShadow: {
+    inherit: "shadow",
 
-      background: `linear-gradient(
-        to right,
-        rgba(${background}, 0) 0%,
-        rgba(${background}, 1) 50%,
-        rgba(${background}, 1) 100%
-      )`,
-    },
+    background: `linear-gradient(
+    to right,
+    rgba(${activeBackground}, 0) 0%,
+    rgba(${activeBackground}, 1) 50%,
+    rgba(${activeBackground}, 1) 100%
+    )`,
+  },
 
-    activeShadow: {
-      inherit: "shadow",
+});
 
-      background: `linear-gradient(
-        to right,
-        rgba(${activeBackground}, 0) 0%,
-        rgba(${activeBackground}, 1) 50%,
-        rgba(${activeBackground}, 1) 100%
-      )`,
-    },
-
-  };
+export default {
 
   renderIcon(icon) {
     if (typeof icon === "string") {
-      return m.component(Icon, icon, { ss: this.getStyle("icon") });
+      return m.component(Icon, icon, { ss: ss.get("icon") });
     }
 
     return icon;
-  }
+  },
 
-  render({ title, icon, active=false, onClick=()=>{} }) {
+  view(controller, { title, icon, active=false, onClick=()=>{} }) {
     return (
       m("div",
         {
-          ss: ["root", active && "active"],
+          className: ss.render(["root", active && "active"]),
           onmousedown: stop(),
           onclick: stop(onClick),
         },
         this.renderIcon(icon),
         title,
-        m("div", { ss: active ? "activeShadow" : "shadow" })
+        m("div", { className: ss.render(active ? "activeShadow" : "shadow") })
       )
     );
-  }
+  },
 
 }

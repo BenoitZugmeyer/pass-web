@@ -1,24 +1,23 @@
 import m from "mithril";
 import { copy } from "../selection";
-import { marginSize } from "../css";
-import Component from "../Component";
+import { base, marginSize } from "../css";
 
-export default class CopyIcon extends Component {
+const ss = base.namespace("CopyIcon").add({
+  root: {
+    verticalAlign: "middle",
+    display: "inline-block",
+    cursor: "pointer",
+    position: "relative",
+    top: "-4px",
+    margin: `0 ${marginSize}`,
+  },
+});
 
-  static styles = {
-    root: {
-      verticalAlign: "middle",
-      display: "inline-block",
-      cursor: "pointer",
-      position: "relative",
-      top: "-4px",
-      margin: `0 ${marginSize}`,
-    },
-  };
+export default {
 
-  render({ content, ...attrs }) {
+  view(controller, { content, ...attrs }) {
     return m("svg", Object.assign(attrs, {
-      ss: ["root", attrs.ss],
+      className: ss.render(["root", attrs.ss]),
       xmlns: "http://www.w3.org/2000/svg",
       width: "20",
       height: "20",
@@ -36,7 +35,7 @@ export default class CopyIcon extends Component {
         "stroke-linejoin": "round",
       }),
     ]);
-  }
+  },
 
 }
 

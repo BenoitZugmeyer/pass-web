@@ -29,6 +29,7 @@ let config = {
       "process.env": {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || ""),
       },
+      "__DEV__": process.env.NODE_ENV !== "production",
     }),
   ],
   module: {
@@ -36,6 +37,10 @@ let config = {
       {
         test: /\.js$/,
         loader: "babel",
+        query: {
+          babelrc: false,
+          presets: ["es2015", "stage-0"],
+        },
       },
       {
         test: /\.svg$/,

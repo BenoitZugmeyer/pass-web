@@ -1,67 +1,64 @@
 "use strict";
 
 import m from "mithril";
-import Component from "../Component";
 import { signin } from "../actions";
 import { stop } from "../domUtil";
 import { catch_, finally_ } from "../promiseUtil";
-import { marginSize } from "../css";
+import { base, marginSize } from "../css";
 
-export default class Auth extends Component {
+const ss = base.namespace("Auth").add({
 
-  static styles = {
+  root: {
+    textAlign: "center",
+  },
 
-    root: {
-      textAlign: "center",
-    },
+  textField: {
+    inherit: "textField",
+    marginRight: marginSize,
+    marginBottom: marginSize,
+  },
 
-    textField: {
-      inherit: "textField",
-      marginRight: marginSize,
-      marginBottom: marginSize,
-    },
+  error: {
+    inherit: "error",
+    marginBottom: marginSize,
+  },
 
-    error: {
-      inherit: "error",
-      marginBottom: marginSize,
-    },
+});
 
-  };
+export default {
 
-  constructor() {
-    super();
+  controller() {
     this.passphrase = m.prop("");
     this.error = m.prop();
     this.loading = m.prop(false);
-  }
+    this.submit = () => {
+      this.loading(true);
+      signin(this.passphrase())
+        ::finally_(() => this.loading(false))
+        ::catch_(this.error);
+    };
+  },
 
-  submit() {
-    this.loading(true);
-    signin(this.passphrase())
-      ::finally_(() => this.loading(false))
-      ::catch_(this.error);
-  }
-
-  render() {
+  view(controller) {
     return (
-      m("form", { ss: "root", onsubmit: stop(::this.submit) }, [
+      m("form", { className: ss.render("root"), onsubmit: stop(controller.submit) }, [
 
-        this.error() && m("div", { ss: "error" }, "Error: ", this.error().message),
+        controller.error() && m("div", { className: ss.render("error") }, "Error: ", controller.error().message),
 
         m("input", {
-          ss: "textField",
+          className: ss.render("textField"),
           type: "password",
           config(el) {
             el.focus();
           },
-          onchange: m.withAttr("value", this.passphrase),
-          value: this.passphrase(),
+          onchange: m.withAttr("value", controller.passphrase),
+          value: controller.passphrase(),
         }),
 
-        m("button", { ss: "button", disabled: this.loading() }, "Login"),
+        m("button", { className: ss.render("button"), disabled: controller.loading() }, "Login"),
 
-        process.env.NODE_ENV === "demo" && m("div", "Hint: the demo passphrase is 'demo'."),
+        process.env.NODE_ENV === "demo" && m("div", "Hint: the demo passphrase is 'demo'.") || "",
       ])
     );
-  }
+  },
 }

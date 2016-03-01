@@ -1,10 +1,9 @@
 import m from "mithril";
-import Component from "../Component";
 import Line from "./Line";
 
-export default class Directory extends Component {
+export default {
 
-  render({ children, activeChild, onActiveChildChanged=() => {} }) {
+  view(controller, { children, activeChild, onActiveChildChanged=() => {} }) {
 
     children.sort((a, b) => {
       // Sort directories first
@@ -26,6 +25,6 @@ export default class Directory extends Component {
         }
       );
     }));
-  }
+  },
 
 }

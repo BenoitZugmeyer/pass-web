@@ -1,21 +1,21 @@
 import m from "mithril";
-import Component from "../Component";
+import { base } from "../css";
 import icons from "../icons.svg";
 
-export default class Icon extends Component {
+const ss = base.namespace("Icon").add({
+  root: {
+    verticalAlign: "middle",
+    display: "inline-block",
+  },
+});
 
-  static styles = {
-    root: {
-      verticalAlign: "middle",
-      display: "inline-block",
-    },
-  };
+export default {
 
-  render(name, attrs) {
+  view(controller, name, attrs) {
     return m("img", Object.assign({}, attrs, {
       src: `${icons}#${name}`,
-      ss: ["root", attrs.ss],
+      className: ss.render(["root", attrs.ss]),
     }));
-  }
+  },
 
 }

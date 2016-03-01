@@ -1,50 +1,49 @@
 import m from "mithril";
 import Auth from "./Auth";
-import Component from "../Component";
 import store from "../store";
 import List from "./List";
 import Search from "./Search";
 import { logout, search } from "../actions";
 import { stop } from "../domUtil";
-import { marginSize } from "../css";
+import { base, marginSize } from "../css";
 
-export default class App extends Component {
+const ss = base.namespace("App").add({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "stretch",
 
-  static styles = {
-    root: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "stretch",
+    position: "relative",
+    boxSizing: "border-box",
 
-      position: "relative",
-      boxSizing: "border-box",
+    height: "100vh",
+    maxWidth: "40em",
+    margin: "auto",
+    padding: "12px",
+  },
 
-      height: "100vh",
-      maxWidth: "40em",
-      margin: "auto",
-      padding: "12px",
-    },
+  header: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: marginSize,
+  },
+});
 
-    header: {
-      display: "flex",
-      justifyContent: "space-between",
-      marginBottom: marginSize,
-    },
-  };
+export default {
 
-  render() {
-    const isNewlyLogged = !this.wasLogged && store.loggedIn;
-    this.wasLogged = store.loggedIn;
+  view(controller) {
+    const isNewlyLogged = !controller.wasLogged && store.loggedIn;
+    controller.wasLogged = store.loggedIn;
 
     return (
       m("div",
-        { ss: "root" },
+        { className: ss.render("root") },
         store.loggedIn ? [
-          m("div", { ss: "header" }, [
+          m("div", { className: ss.render("header") }, [
             m.component(Search, { onChange: search, focus: isNewlyLogged }),
             m("button", {
               onclick: stop(logout),
-              ss: "button",
+              className: ss.render("button"),
             }, "Logout"),
           ]),
           m.component(List, store.list),
@@ -52,6 +51,6 @@ export default class App extends Component {
         m.component(Auth)
       )
     );
-  }
+  },
 
 }
