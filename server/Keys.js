@@ -59,7 +59,7 @@ module.exports = class Keys {
         const requestId = keyId(ids[index]);
         let key;
         try {
-          key = this._get(requestId);
+          key = this._getById(requestId);
         }
         catch (e) {
           error = e;
@@ -87,10 +87,24 @@ module.exports = class Keys {
     });
   }
 
-  _get(id) {
+  _get(idOrEmail) {
+    return idOrEmail.indexOf("@") > 0 ? this._getByEmail(idOrEmail) : this._getById(idOrEmail);
+  }
+
+  _getById(id) {
     id = keyId(id);
     if (!this._keys.has(id)) throw new KeyError(`Key ${id} not found`);
     return this._keys.get(id);
+  }
+
+  _getByEmail(email) {
+    for (const key of this._keys.values()) {
+      for (const userid of key.material.get_signed_userids()) {
+        if (userid.get_email() === email) return key;
+      }
+    }
+
+    throw new KeyError(`Key with email ${email} not found`);
   }
 
   addFromFile(filePath) {
