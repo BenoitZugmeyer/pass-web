@@ -87,6 +87,10 @@ module.exports = class Keys {
     });
   }
 
+  isEmpty() {
+    return this._keys.size === 0;
+  }
+
   _get(idOrEmail) {
     return idOrEmail.indexOf("@") > 0 ? this._getByEmail(idOrEmail) : this._getById(idOrEmail);
   }

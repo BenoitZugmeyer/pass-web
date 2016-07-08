@@ -302,6 +302,11 @@ promiseUtil.run(function* () {
 
   log.setLevel(args.debug ? log.DEBUG : log.INFO);
 
+  if (keys.isEmpty()) {
+    log.error("No key added. Use pass-web --help for more information.");
+    return;
+  }
+
   const urlBaseDirArg = (args["url-base-dir"] || "").replace(/^\/+|\/+$/g, "");
   const urlBaseDir = urlBaseDirArg ? `/${urlBaseDirArg}/` : "/";
 
