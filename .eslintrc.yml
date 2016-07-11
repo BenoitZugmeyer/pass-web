@@ -1,0 +1,20 @@
+parser: babel-eslint
+
+extends: eslint:recommended
+
+rules:
+  comma-dangle: [error, "always-multiline"]
+  no-constant-condition: 0
+  curly: [error, "multi-line"]
+  no-var: error
+  quotes: error
+  brace-style: [error, "stroustrup"]
+
+  filenames/match-exported: error
+
+env:
+  node: true
+  es6: true
+
+plugins:
+  - filenames

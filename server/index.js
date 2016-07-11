@@ -94,7 +94,7 @@ const auth = promiseUtil.wrapRun(function* (conf, requestPath, passphrase) {
   const gpgId = yield getGPGId(requestPath || conf.passwordStorePath);
 
   if (!(yield conf.keys.verify(gpgId, passphrase))) {
-    throw new AuthError(`Bad passphrase`);
+    throw new AuthError("Bad passphrase");
   }
 
   return gpgId;
@@ -117,7 +117,8 @@ function apiRouter(conf) {
   function wrap(gen) {
     return promiseUtil.wrapRun(function* (req, res, next) {
       try {
-        yield* gen(req, res, next);
+        const iterable = gen(req, res, next);
+        if (iterable && iterable[Symbol.iterator]) yield* iterable;
       }
       catch (error) {
         log.debug(error);
@@ -144,7 +145,7 @@ function apiRouter(conf) {
     }
   });
 
-  router.use(wrap(function* (req, res, next) {
+  router.use(wrap((req, res, next) => {
     if (!req.body) throw new InvalidParameter("No request body");
     if (!req.body.passphrase) throw new InvalidParameter("No passphrase");
     req.auth = (requestPath) => auth(conf, requestPath, req.body.passphrase);

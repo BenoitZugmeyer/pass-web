@@ -1,5 +1,0 @@
-env:
-    node: false
-    browser: true
-
-# vim: ft=yaml
