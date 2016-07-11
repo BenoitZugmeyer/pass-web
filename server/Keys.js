@@ -32,10 +32,14 @@ module.exports = class Keys {
 
   add(manager) {
     for (const id of manager.get_all_pgp_key_ids()) {
-      log.info`Add key ${keyId(id)}`;
+      const material = manager.find_pgp_key_material(id);
+      const emails = material.get_signed_userids().map((u) => u.get_email());
+      const printableEmails = emails.length ? ` (${emails.join(", ")})` : "";
+
+      log.info`Add key ${keyId(id)}${printableEmails}`;
       this._keys.set(keyId(id), {
         manager,
-        material: manager.find_pgp_key_material(id),
+        material,
       });
     }
   }
