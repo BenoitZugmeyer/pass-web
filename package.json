@@ -35,7 +35,7 @@
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.9.0",
     "mithril": "^0.2.0",
-    "sans-sel": "git+https://github.com/BenoitZugmeyer/sans-sel.git#master",
+    "sans-sel": "1.0.0-dev.0",
     "svgo": "^0.6.1",
     "svgo-loader": "^1.1.0",
     "webpack": "^1.12.8"
