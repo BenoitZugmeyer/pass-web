@@ -1,5 +1,5 @@
 "use strict";
-/*eslint filenames/filenames: 0*/
+/*eslint filenames/match-exported: off*/
 
 const path = require("path");
 const webpack = require("webpack");
