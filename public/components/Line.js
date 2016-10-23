@@ -5,7 +5,7 @@ import { base, marginSize, borderRadius } from "../css";
 
 const background = "236, 240, 241";
 const activeBackground = "189, 195, 199";
-const ss = base.namespace("Line").add({
+const ss = base.namespace("Line").addRules({
 
   root: {
     position: "relative",
@@ -56,7 +56,7 @@ export default {
 
   renderIcon(icon) {
     if (typeof icon === "string") {
-      return m.component(Icon, icon, { ss: ss.get("icon") });
+      return m.component(Icon, icon, { style: ss("icon") });
     }
 
     return icon;
@@ -66,13 +66,13 @@ export default {
     return (
       m("div",
         {
-          className: ss.render(["root", active && "active"]),
+          className: ss("root", active && "active"),
           onmousedown: stop(),
           onclick: stop(onClick),
         },
         this.renderIcon(icon),
         title,
-        m("div", { className: ss.render(active ? "activeShadow" : "shadow") })
+        m("div", { className: ss(active ? "activeShadow" : "shadow") })
       )
     );
   },

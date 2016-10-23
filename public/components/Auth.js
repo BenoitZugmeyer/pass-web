@@ -6,7 +6,7 @@ import { stop } from "../domUtil";
 import { catch_, finally_ } from "../promiseUtil";
 import { base, marginSize } from "../css";
 
-const ss = base.namespace("Auth").add({
+const ss = base.namespace("Auth").addRules({
 
   root: {
     textAlign: "center",
@@ -41,12 +41,12 @@ export default {
 
   view(controller) {
     return (
-      m("form", { className: ss.render("root"), onsubmit: stop(controller.submit) }, [
+      m("form", { className: ss("root"), onsubmit: stop(controller.submit) }, [
 
-        controller.error() && m("div", { className: ss.render("error") }, "Error: ", controller.error().message),
+        controller.error() && m("div", { className: ss("error") }, "Error: ", controller.error().message),
 
         m("input", {
-          className: ss.render("textField"),
+          className: ss("textField"),
           type: "password",
           config(el) {
             el.focus();
@@ -55,7 +55,7 @@ export default {
           value: controller.passphrase(),
         }),
 
-        m("button", { className: ss.render("button"), disabled: controller.loading() }, "Login"),
+        m("button", { className: ss("button"), disabled: controller.loading() }, "Login"),
 
         process.env.NODE_ENV === "demo" && m("div", "Hint: the demo passphrase is 'demo'.") || "",
       ])

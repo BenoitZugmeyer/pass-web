@@ -7,7 +7,7 @@ import { logout, search } from "../actions";
 import { stop } from "../domUtil";
 import { base, marginSize } from "../css";
 
-const ss = base.namespace("App").add({
+const ss = base.namespace("App").addRules({
   root: {
     display: "flex",
     flexDirection: "column",
@@ -37,13 +37,13 @@ export default {
 
     return (
       m("div",
-        { className: ss.render("root") },
+        { className: ss("root") },
         store.loggedIn ? [
-          m("div", { className: ss.render("header") }, [
+          m("div", { className: ss("header") }, [
             m.component(Search, { onChange: search, focus: isNewlyLogged }),
             m("button", {
               onclick: stop(logout),
-              className: ss.render("button"),
+              className: ss("button"),
             }, "Logout"),
           ]),
           m.component(List, store.list),

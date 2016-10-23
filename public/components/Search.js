@@ -2,7 +2,7 @@ import m from "mithril";
 import Icon from "./Icon";
 import { base, marginSize } from "../css";
 
-const ss = base.namespace("Search").add({
+const ss = base.namespace("Search").addRules({
 
     root: {
       position: "relative",
@@ -52,17 +52,17 @@ export default {
     const hasValue = Boolean(this.input && this.input.value);
 
     return (
-      m("div", { className: ss.render("root") }, [
+      m("div", { className: ss("root") }, [
         m("input", {
-          className: ss.render("textField"),
+          className: ss("textField"),
           config: (el) => {
             this.input = el;
             if (focus) el.focus();
           },
           onkeyup: triggerChange,
         }),
-        m("div", { className: ss.render(["button", hasValue && "buttonActive" ]), onclick: emptyInput }, [
-          m.component(Icon, hasValue ? "clean" : "search", { ss: ss.get("searchIcon") }),
+        m("div", { className: ss("button", hasValue && "buttonActive"), onclick: emptyInput }, [
+          m.component(Icon, hasValue ? "clean" : "search", { style: ss("searchIcon") }),
         ]),
       ])
     );

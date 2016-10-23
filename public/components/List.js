@@ -6,7 +6,7 @@ import { base, marginSize, borderRadius, boxShadow } from "../css";
 
 const transitionDelay = 0.5; // second
 const empty = {};
-const ss = base.namespace("List").add({
+const ss = base.namespace("List").addRules({
   root: {
     display: "flex",
     borderRadius,
@@ -132,12 +132,12 @@ export default {
       }
 
       return m("div", {
-        className: ss.render("column"),
+        className: ss("column"),
         style: { width },
       }, [
-        m("div", { className: ss.render("separator") }),
+        m("div", { className: ss("separator") }),
         m("div", {
-          className: ss.render("columnContent"),
+          className: ss("columnContent"),
           key: file.name,
         }, children),
       ]);
@@ -189,13 +189,13 @@ export default {
     };
 
     return (
-      m("div", { className: ss.render("root") },
+      m("div", { className: ss("root") },
         list.length ?
-          m("div", { className: ss.render("container"), config },
+          m("div", { className: ss("container"), config },
             renderColumn({ children: list }, 0),
             renderPath.map((file, i) => renderColumn(file, i + 1)),
           ) :
-          m("div", { className: ss.render("noResult") }, "No result"),
+          m("div", { className: ss("noResult") }, "No result"),
       )
     );
   },

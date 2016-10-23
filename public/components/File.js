@@ -5,7 +5,7 @@ import { select, unselect } from "../selection";
 import { finally_ } from "../promiseUtil";
 import { base, marginSize } from "../css";
 
-const ss = base.namespace("File").add({
+const ss = base.namespace("File").addRules({
   root: {
     overflow: "hidden",
   },
@@ -103,7 +103,7 @@ const renderer = new Renderer();
 renderer.add(/\bhttps?:\/\/\S+/,
              (match) => {
                return m("a", {
-                 className: ss.render("link"),
+                 className: ss("link"),
                  href: match[0],
                  target: "_blank",
                }, match[0]);
@@ -112,7 +112,7 @@ renderer.add(/\bhttps?:\/\/\S+/,
 renderer.add(/\S+@\S+/,
              (match) => {
                return m("a", {
-                 className: ss.render("link"),
+                 className: ss("link"),
                  href: `mailto:${match[0]}`,
                  target: "_blank",
                }, match[0]);
@@ -142,14 +142,14 @@ export default {
     return [
       m("div",
         passwordLine && m("span", {
-          className: ss.render("passwordSelector"),
+          className: ss("passwordSelector"),
           onmouseover: selectPassword,
           onclick: selectPassword,
           onmouseout: unselect,
         }, [
           "\u2022".repeat(10),
           m("span", {
-            className: ss.render("passwordLine"),
+            className: ss("passwordLine"),
             config: (element) => {
               passwordLineElement = element;
             },
@@ -157,15 +157,15 @@ export default {
         ]),
         m.component(CopyIcon, { content: passwordLine }),
       ),
-      m("div", { className: ss.render("rest") }, renderer.render(rest.trimRight())),
+      m("div", { className: ss("rest") }, renderer.render(rest.trimRight())),
     ];
   },
 
   view(controller) {
     return (
-      m("div", { className: ss.render("root") }, [
+      m("div", { className: ss("root") }, [
         controller.loading() ? m("div", "Loading...") :
-        controller.error() ? m("div", { className: ss.render("error") }, "Error: ", controller.error().message) :
+        controller.error() ? m("div", { className: ss("error") }, "Error: ", controller.error().message) :
           this.renderLoaded(controller),
       ])
     );

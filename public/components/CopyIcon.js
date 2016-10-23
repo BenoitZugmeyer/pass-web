@@ -2,7 +2,7 @@ import m from "mithril";
 import { copy } from "../selection";
 import { base, marginSize } from "../css";
 
-const ss = base.namespace("CopyIcon").add({
+const ss = base.namespace("CopyIcon").addRules({
   root: {
     verticalAlign: "middle",
     display: "inline-block",
@@ -17,7 +17,7 @@ export default {
 
   view(controller, { content, ...attrs }) {
     return m("svg", Object.assign(attrs, {
-      className: ss.render(["root", attrs.ss]),
+      className: ss("root", attrs.style),
       xmlns: "http://www.w3.org/2000/svg",
       width: "20",
       height: "20",
