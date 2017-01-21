@@ -1,4 +1,4 @@
-import m from "mithril";
+import { h } from "preact";
 import { base } from "../css";
 import icons from "../icons.svg";
 
@@ -9,13 +9,6 @@ const ss = base.namespace("Icon").addRules({
   },
 });
 
-export default {
-
-  view(controller, name, attrs) {
-    return m("img", Object.assign({}, attrs, {
-      src: `${icons}#${name}`,
-      className: ss("root", attrs.style),
-    }));
-  },
-
-}
+export default ({ name, style, ...props}) => (
+  <img {...props} src={`${icons}#${name}`} class={ss("root", style)} />
+);

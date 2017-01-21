@@ -1,6 +1,6 @@
 "use strict";
 
-import m from "mithril";
+import { Component, h } from "preact";
 import { signin } from "../actions";
 import { stop } from "../domUtil";
 import { catch_, finally_ } from "../promiseUtil";
@@ -25,40 +25,39 @@ const ss = base.namespace("Auth").addRules({
 
 });
 
-export default {
+export default class Auth extends Component {
 
-  controller() {
-    this.passphrase = m.prop("");
-    this.error = m.prop();
-    this.loading = m.prop(false);
-    this.submit = () => {
-      this.loading(true);
-      signin(this.passphrase())
-        ::finally_(() => this.loading(false))
-        ::catch_(this.error);
+  constructor() {
+    super()
+    this.state = {
+      passphrase: "",
+      error: null,
+      loading: false,
     };
-  },
 
-  view(controller) {
+    this.submit = () => {
+      this.setState({ loading: true })
+      signin(this.state.passphrase)
+      ::finally_(() => this.setState({ loading: false }))
+      ::catch_((error) => this.setState({ error }));
+    };
+  }
+
+  render(props, {error, passphrase, loading}) {
     return (
-      m("form", { className: ss("root"), onsubmit: stop(controller.submit) }, [
-
-        controller.error() && m("div", { className: ss("error") }, "Error: ", controller.error().message),
-
-        m("input", {
-          className: ss("textField"),
-          type: "password",
-          config(el) {
-            el.focus();
-          },
-          onchange: m.withAttr("value", controller.passphrase),
-          value: controller.passphrase(),
-        }),
-
-        m("button", { className: ss("button"), disabled: controller.loading() }, "Login"),
-
-        process.env.NODE_ENV === "demo" && m("div", "Hint: the demo passphrase is 'demo'.") || "",
-      ])
+      <form class={ss("root")} onSubmit={stop(this.submit)}>
+        {error && <div class={ss("error")}>Error: {error.message}</div>}
+        <input
+          class={ss("textField")}
+          type="pasword"
+          ref={(el) => el && el.focus()}
+          onChange={(event) => this.setState({ passphrase: event.target.value })}
+          value={passphrase} />
+        <button class={ss("button")} disabled={loading}>
+          Login
+        </button>
+        {process.env.NODE_ENV === "demo" && <div>Hint: the demo passphrase is 'demo'.</div>}
+      </form>
     );
-  },
+  }
 }

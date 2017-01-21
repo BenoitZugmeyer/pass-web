@@ -1,4 +1,4 @@
-import m from "mithril";
+import { h, Component } from "preact";
 import { get } from "../actions";
 import CopyIcon from "./CopyIcon";
 import { select, unselect } from "../selection";
@@ -101,74 +101,80 @@ class Renderer {
 const renderer = new Renderer();
 
 renderer.add(/\bhttps?:\/\/\S+/,
-             (match) => {
-               return m("a", {
-                 className: ss("link"),
-                 href: match[0],
-                 target: "_blank",
-               }, match[0]);
-             });
+  (match) => (
+    <a class={ss("link")} href={match[0]} target="_blank">
+      {match[0]}
+    </a>
+  )
+);
 
 renderer.add(/\S+@\S+/,
-             (match) => {
-               return m("a", {
-                 className: ss("link"),
-                 href: `mailto:${match[0]}`,
-                 target: "_blank",
-               }, match[0]);
-             });
+  (match) => (
+    <a class={ss("link")} href={`mailto:${match[0]}`} target="_blank">
+      {match[0]}
+    </a>
+  )
+);
 
 renderer.add(/^[A-Z].*?:/,
-             (match) => m("strong", match[0]));
+  (match) => (<strong>{match[0]}</strong>)
+);
 
-export default {
+export default class File extends Component {
 
-  controller({ path }) {
-    this.content = m.prop("");
-    this.error = m.prop(false);
-    this.loading = m.prop(true);
+  constructor({ path }) {
+    super();
+    this.state = {
+      content: "",
+      error: false,
+      loading: true,
+    };
+
     get(path)
-      ::finally_(() => this.loading(false))
-      .then(this.content, this.error);
-  },
+      ::finally_(() => this.setState({ loading: false }))
+      .then(
+        (content) => this.setState({ content }),
+        (error) => this.setState({ error }),
+      );
+  }
 
-  renderLoaded(controller) {
-    const lines = controller.content().split("\n");
+  renderLoaded(content) {
+    const lines = content.split("\n");
     const passwordLine = lines[0];
     const rest = lines.slice(1).join("\n");
     let passwordLineElement;
     const selectPassword = () => select(passwordLineElement);
 
     return [
-      m("div",
-        passwordLine && m("span", {
-          className: ss("passwordSelector"),
-          onmouseover: selectPassword,
-          onclick: selectPassword,
-          onmouseout: unselect,
-        }, [
-          "\u2022".repeat(10),
-          m("span", {
-            className: ss("passwordLine"),
-            config: (element) => {
-              passwordLineElement = element;
-            },
-          }, passwordLine),
-        ]),
-        m.component(CopyIcon, { content: passwordLine }),
-      ),
-      m("div", { className: ss("rest") }, renderer.render(rest.trimRight())),
+      <div>
+        {passwordLine && (
+          <span
+            class={ss("passwordSelector")}
+            onMouseOver={selectPassword}
+            onClick={selectPassword}
+            onMouseOut={unselect}>
+            {"\u2022".repeat(10)}
+            <span class={ss("passwordLine")} ref={(el) => passwordLineElement = el}>
+              {passwordLine}
+            </span>
+          </span>
+        )}
+        <CopyIcon content={passwordLine} />
+      </div>,
+      <div class={ss("rest")}>
+        {renderer.render(rest.trimRight())}
+      </div>,
     ];
-  },
+  }
 
-  view(controller) {
+  render(_, { loading, error, content }) {
     return (
-      m("div", { className: ss("root") }, [
-        controller.loading() ? m("div", "Loading...") :
-        controller.error() ? m("div", { className: ss("error") }, "Error: ", controller.error().message) :
-          this.renderLoaded(controller),
-      ])
+      <div class={ss("root")}>
+        {loading ? <div>Loading...</div> :
+          error ? <div class={ss("error")}>Error: {error.message}</div> :
+          this.renderLoaded(content)}
+      </div>
     );
-  },
+  }
 
 }

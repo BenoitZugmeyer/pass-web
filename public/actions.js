@@ -1,6 +1,4 @@
-import m from "mithril";
 import store from "./store";
-import { finally_ } from "./promiseUtil";
 import { emptyClipboard } from "./selection";
 
 let request;
@@ -78,21 +76,18 @@ if (process.env.NODE_ENV === "demo") {
 }
 else {
   request = (route, data) => {
-    return m.request({
-      background: true,
-      method: "POST",
-      url: "api/" + route,
-      data,
-      config(xhr) {
-        xhr.responseType = "json";
-      },
-      deserialize(i) {
-        return i;
-      },
-      extract(xhr) {
-        if (xhr.status !== 200) throw new Error(`Unexpected HTTP status code ${xhr.status}`);
-        return xhr.response;
-      },
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.addEventListener("timeout", () => reject(new Error("http timeout")));
+      xhr.addEventListener("error", () => reject(new Error("http error")));
+      xhr.addEventListener("load", () => {
+        if (xhr.status !== 200) reject(new Error(`Unexpected HTTP status code ${xhr.status}`));
+        else resolve(xhr.response);
+      });
+      xhr.open("POST", `api/${route}`);
+      xhr.responseType = "json";
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify(data));
     })
   };
 }
@@ -104,8 +99,7 @@ function call(route, data) {
         throw Object.assign(new Error(response.error.message), response.error);
       }
       return response;
-    })
-    ::finally_(() => setTimeout(() => m.redraw(), 0));
+    });
 }
 
 let fullList;

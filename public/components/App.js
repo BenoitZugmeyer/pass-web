@@ -1,4 +1,4 @@
-import m from "mithril";
+import { Component, h } from "preact";
 import Auth from "./Auth";
 import store from "../store";
 import List from "./List";
@@ -29,28 +29,39 @@ const ss = base.namespace("App").addRules({
   },
 });
 
-export default {
+export default class App extends Component {
+  constructor() {
+    super()
+    this.state = { store }
+    this.updateStore = () => this.setState({ store });
+  }
 
-  view(controller) {
-    const isNewlyLogged = !controller.wasLogged && store.loggedIn;
-    controller.wasLogged = store.loggedIn;
+  componentDidMount() {
+    store.register(this.updateStore)
+  }
+
+  componentWillUnmount() {
+    store.unregister(this.updateStore)
+  }
+
+  render(_, { store }) {
+    const isNewlyLogged = !this.wasLogged && store.loggedIn;
+    this.wasLogged = store.loggedIn;
 
     return (
-      m("div",
-        { className: ss("root") },
-        store.loggedIn ? [
-          m("div", { className: ss("header") }, [
-            m.component(Search, { onChange: search, focus: isNewlyLogged }),
-            m("button", {
-              onclick: stop(logout),
-              className: ss("button"),
-            }, "Logout"),
-          ]),
-          m.component(List, store.list),
-        ] :
-        m.component(Auth)
-      )
+      <div class={ss("root")}>
+        {store.loggedIn && (
+          <div class={ss("header")}>
+            <Search onChange={search} focus={isNewlyLogged} />
+            <button onClick={stop(logout)} class={ss("button")}>
+              Logout
+            </button>
+          </div>
+        )}
+        {store.loggedIn && <List list={store.list} />}
+        {!store.loggedIn && <Auth />}
+      </div>
     );
-  },
+  }
 
 }

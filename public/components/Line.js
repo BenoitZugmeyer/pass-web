@@ -1,4 +1,4 @@
-import m from "mithril";
+import {h} from "preact";
 import Icon from "./Icon";
 import { stop } from "../domUtil";
 import { base, marginSize, borderRadius } from "../css";
@@ -52,29 +52,10 @@ const ss = base.namespace("Line").addRules({
 
 });
 
-export default {
-
-  renderIcon(icon) {
-    if (typeof icon === "string") {
-      return m.component(Icon, icon, { style: ss("icon") });
-    }
-
-    return icon;
-  },
-
-  view(controller, { title, icon, active=false, onClick=()=>{} }) {
-    return (
-      m("div",
-        {
-          className: ss("root", active && "active"),
-          onmousedown: stop(),
-          onclick: stop(onClick),
-        },
-        this.renderIcon(icon),
-        title,
-        m("div", { className: ss(active ? "activeShadow" : "shadow") })
-      )
-    );
-  },
-
-}
+export default ({ title, icon, active=false, onClick=()=>{} }) => (
+  <div class={ss("root", active && "active")} onMouseDown={stop()} onClick={stop(onClick)}>
+    {typeof icon === "string" ? <Icon name={icon} style={ss("icon")} /> : icon}
+    {title}
+    <div class={ss(active ? "activeShadow" : "shadow")} />
+  </div>
+)

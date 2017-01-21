@@ -1,4 +1,4 @@
-import m from "mithril";
+import { h, Component } from "preact";
 import Directory from "./Directory";
 import File from "./File";
 import { base, marginSize, borderRadius, boxShadow } from "../css";
@@ -54,57 +54,111 @@ const ss = base.namespace("List").addRules({
 
 });
 
-export default {
+export default class List extends Component {
 
-  controller() {
-    this.path = [];
-    this.setPath = (newPath) => {
-      this.previousPath = this.path.slice();
-      this.path = newPath;
+  constructor() {
+    super();
+    this.state = {
+      path: [],
+      previousPath: null,
     };
 
-    this.updatePath = (list) => {
-      const findFileByName = (list, name) => {
-        for (const file of list) {
-          if (file.name === name) return file;
-        }
-      };
+    this.setPath = (newPath) => {
+      this.setState(({ path }) => ({ previousPath: path.slice(), path: newPath }));
+    };
+  }
 
-      for (let i = 0; i < this.path.length; i += 1) {
-        const newChild = findFileByName(list, this.path[i].name);
-        if (newChild) {
-          this.path[i] = newChild;
-          list = newChild.children;
-          if (!list) break;
-        }
-        else {
-          this.path.length = i;
-          break;
-        }
+  updatePath(list) {
+    const path = this.state.path;
+    const findFileByName = (list, name) => {
+      for (const file of list) {
+        if (file.name === name) return file;
       }
+    };
 
-      while (list && list.length === 1) {
-        this.path.push(list[0]);
-        list = list[0].children;
+    for (let i = 0; i < path.length; i += 1) {
+      const newChild = findFileByName(list, path[i].name);
+      if (newChild) {
+        path[i] = newChild;
+        list = newChild.children;
+        if (!list) break;
+      }
+      else {
+        path.length = i;
+        break;
       }
     }
 
-  },
+    while (list && list.length === 1) {
+      path.push(list[0]);
+      list = list[0].children;
+    }
+  }
 
-  view(controller, list) {
+  adjustColumnWidths() {
+    const columnWidth = 200;
+    const columnCount = this.state.path.length + 1;
+    const fullWidth = this.container.clientWidth;
+    const nodes = Array.from(this.container.childNodes);
 
-    controller.updatePath(list);
+    if (fullWidth > columnCount * columnWidth) {
+      nodes.forEach((node, index) => {
+        if (index >= columnCount) {
+          // Shrink previous extra columns
+          node.style.width = "0";
+        }
+        else if (index >= columnCount - 1) {
+          // Last column fills the extra space
+          const extraSpace = fullWidth - columnWidth * (columnCount - 1);
+          node.style.width = `${extraSpace}px`;
+        }
+        else {
+          // Other columns have the default width
+          node.style.width = `${columnWidth}px`;
+        }
+      });
+    }
+    else {
+      const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0);
 
-    const renderPath = controller.path.slice();
-    if (controller.previousPath && controller.previousPath.length > controller.path.length) {
-      const isSubpath = controller.path[controller.path.length - 1] === controller.previousPath[controller.path.length - 1];
-      for (const child of controller.previousPath.slice(controller.path.length)) {
+      nodes.forEach((node, index) => {
+        if (index >= columnCount) {
+          // Shrink previous extra columns
+          node.style.width = "0";
+        }
+        else if (index >= columnCount - 2) {
+          // Last two columns have the default width
+          node.style.width = `${columnWidth}px`;
+        }
+        else {
+          // Shrink other columns to fill the remaining space
+          node.style.width = `${remainingWidth}px`;
+        }
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.adjustColumnWidths();
+  }
+
+  componentDidUpdate() {
+    this.adjustColumnWidths();
+  }
+
+  render({ list }, { path, previousPath }) {
+
+    this.updatePath(list);
+
+    const renderPath = path.slice();
+    if (previousPath && previousPath.length > path.length) {
+      const isSubpath = path[path.length - 1] === previousPath[path.length - 1];
+      for (const child of previousPath.slice(path.length)) {
         renderPath.push(isSubpath ? child : empty);
       }
-      clearTimeout(controller.redrawTimer);
-      controller.redrawTimer = setTimeout(() => {
-        controller.previousPath = undefined;
-        m.redraw();
+      clearTimeout(this.redrawTimer);
+      this.redrawTimer = setTimeout(() => {
+        this.setState({ previousPath: null });
       }, transitionDelay * 1000);
     }
 
@@ -113,91 +167,50 @@ export default {
       const columnPath = renderPath.slice(0, index);
 
       if (file.children) {
-        children = m.component(Directory, {
-          children: file.children,
-          onActiveChildChanged: (child) => {
-            if (!child) controller.setPath(columnPath);
-            else controller.setPath([...columnPath, child]);
-          },
-          activeChild: controller.path[index],
-        });
+        children = (
+          <Directory
+            onActiveChildChanged={(child) => {
+              if (!child) this.setPath(columnPath);
+              else this.setPath([...columnPath, child]);
+            }}
+            activeChild={path[index]}
+          >
+            {file.children}
+          </Directory>
+        );
       }
       else if (file !== empty) {
-        children = m.component(File, { path: columnPath.map((f) => f.name) });
+        children = <File path={columnPath.map((f) => f.name)} />;
       }
 
-      if (controller.previousPath && index > controller.previousPath.length) {
+      if (previousPath && index > previousPath.length) {
         // New column, starts with an empty width
         width = "0";
       }
 
-      return m("div", {
-        className: ss("column"),
-        style: { width },
-      }, [
-        m("div", { className: ss("separator") }),
-        m("div", {
-          className: ss("columnContent"),
-          key: file.name,
-        }, children),
-      ]);
-    };
-
-    const config = (element) => {
-
-      const columnWidth = 200;
-      const columnCount = controller.path.length + 1;
-      const fullWidth = element.clientWidth;
-      const nodes = Array.from(element.childNodes);
-
-      if (fullWidth > columnCount * columnWidth) {
-        nodes.forEach((node, index) => {
-          if (index >= columnCount) {
-            // Shrink previous extra columns
-            node.style.width = "0";
-          }
-          else if (index >= columnCount - 1) {
-            // Last column fills the extra space
-            const extraSpace = fullWidth - columnWidth * (columnCount - 1);
-            node.style.width = `${extraSpace}px`;
-          }
-          else {
-            // Other columns have the default width
-            node.style.width = `${columnWidth}px`;
-          }
-        });
-      }
-      else {
-        const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0);
-
-        nodes.forEach((node, index) => {
-          if (index >= columnCount) {
-            // Shrink previous extra columns
-            node.style.width = "0";
-          }
-          else if (index >= columnCount - 2) {
-            // Last two columns have the default width
-            node.style.width = `${columnWidth}px`;
-          }
-          else {
-            // Shrink other columns to fill the remaining space
-            node.style.width = `${remainingWidth}px`;
-          }
-        });
-      }
-
+      return (
+        <div class={ss("column")} style={{ width }}>
+          <div class={ss("separator")} />
+          <div class={ss("columnContent")} key={file.name}>
+            {children}
+          </div>
+        </div>
+      );
     };
 
     return (
-      m("div", { className: ss("root") },
-        list.length ?
-          m("div", { className: ss("container"), config },
-            renderColumn({ children: list }, 0),
-            renderPath.map((file, i) => renderColumn(file, i + 1)),
+      <div class={ss("root")}>
+        {list.length ?
+          (
+            <div class={ss("container")} ref={(el) => this.container = el}>
+              {renderColumn({ children: list }, 0)}
+              {renderPath.map((file, i) => renderColumn(file, i + 1))}
+            </div>
           ) :
-          m("div", { className: ss("noResult") }, "No result"),
-      )
+          <div class={ss("noResult")}>No result</div>
+        }
+      </div>
     );
-  },
+  }
 
 }

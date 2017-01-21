@@ -1,4 +1,4 @@
-import m from "mithril";
+import { h, Component } from "preact";
 import Icon from "./Icon";
 import { base, marginSize } from "../css";
 
@@ -36,9 +36,9 @@ const ss = base.namespace("Search").addRules({
 
 });
 
-export default {
+export default class Search extends Component {
 
-  view(controller, { onChange, focus }) {
+  render({ onChange, focus }) {
     const triggerChange = () => {
       if (!onChange || !this.input) return;
       onChange(this.input.value);
@@ -52,20 +52,16 @@ export default {
     const hasValue = Boolean(this.input && this.input.value);
 
     return (
-      m("div", { className: ss("root") }, [
-        m("input", {
-          className: ss("textField"),
-          config: (el) => {
-            this.input = el;
-            if (focus) el.focus();
-          },
-          onkeyup: triggerChange,
-        }),
-        m("div", { className: ss("button", hasValue && "buttonActive"), onclick: emptyInput }, [
-          m.component(Icon, hasValue ? "clean" : "search", { style: ss("searchIcon") }),
-        ]),
-      ])
+      <div class={ss("root")}>
+        <input class={ss("textField")} ref={(el) => {
+          this.input = el;
+          if (focus && el) el.focus();
+        }} onKeyUp={triggerChange} />
+        <div class={ss("button", hasValue && "buttonActive")} onClick={emptyInput}>
+          <Icon name={hasValue ? "clean" : "search"} style={ss("searchIcon")} />
+        </div>
+      </div>
     );
-  },
+  }
 
 }
