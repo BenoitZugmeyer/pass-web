@@ -35,6 +35,9 @@ let config = {
   module: {
     loaders: [
       {
+        include(path) {
+          return !path.includes("/node_modules/") || path.includes("/node_modules/sans-sel/");
+        },
         test: /\.js$/,
         loader: "babel-loader",
         query: {
