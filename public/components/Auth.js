@@ -49,7 +49,7 @@ export default class Auth extends Component {
         {error && <div class={ss("error")}>Error: {error.message}</div>}
         <input
           class={ss("textField")}
-          type="pasword"
+          type="password"
           ref={(el) => el && el.focus()}
           onChange={(event) => this.setState({ passphrase: event.target.value })}
           value={passphrase} />
