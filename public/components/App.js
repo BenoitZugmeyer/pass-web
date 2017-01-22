@@ -24,6 +24,7 @@ const ss = base.namespace("App").addRules({
 
   header: {
     display: "flex",
+    flexShrink: 0,
     justifyContent: "space-between",
     marginBottom: marginSize,
   },
