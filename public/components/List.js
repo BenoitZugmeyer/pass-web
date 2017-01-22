@@ -96,6 +96,8 @@ export default class List extends Component {
   }
 
   adjustColumnWidths() {
+    if (this.props.list.length === 0) return;
+
     const columnWidth = 200;
     const columnCount = this.state.path.length + 1;
     const fullWidth = this.container.clientWidth;
