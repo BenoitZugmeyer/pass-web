@@ -3007,9 +3007,9 @@ rx-lite@^3.1.2:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/rx-lite/-/rx-lite-3.1.2.tgz#19ce502ca572665f3b647b10939f97fd1615f102"
 
-sans-sel@1.0.0-dev.1:
-  version "1.0.0-dev.1"
-  resolved "https://registry.yarnpkg.com/sans-sel/-/sans-sel-1.0.0-dev.1.tgz#8bedc9937f9ddacc639f6e699a0854f4f22ab085"
+sans-sel@^1.0.0-beta.1:
+  version "1.0.0-beta.1"
+  resolved "https://registry.yarnpkg.com/sans-sel/-/sans-sel-1.0.0-beta.1.tgz#55039e0b4acb1d4777a54aaf0ec905f06308523e"
 
 sax@~1.2.1:
   version "1.2.1"
