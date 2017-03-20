@@ -33,12 +33,12 @@ let config = {
     }),
   ],
   module: {
-    loaders: [
+    rules: [
       {
+        test: /\.js$/,
         exclude(path) {
           return path.includes("/node_modules/") || path.includes("/sans-sel/")
         },
-        test: /\.js$/,
         loader: "babel-loader",
       },
       {
@@ -58,7 +58,6 @@ let config = {
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "demo") {
   config.plugins.push(
-    new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false,
