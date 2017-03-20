@@ -1,46 +1,46 @@
-let callbacks = [];
+let callbacks = []
 
 function emit() {
-  callbacks.forEach((cb) => cb());
+  callbacks.forEach((cb) => cb())
 }
 
-let list = false;
-let passphrase = false;
+let list = false
+let passphrase = false
 
 export default {
 
   setList(list_) {
-    list = list_;
-    emit();
+    list = list_
+    emit()
   },
 
   setPassphrase(passphrase_) {
-    passphrase = passphrase_;
-    emit();
+    passphrase = passphrase_
+    emit()
   },
 
   logout() {
-    list = false;
+    list = false
   },
 
   get loggedIn() {
-    return Boolean(list);
+    return Boolean(list)
   },
 
   get passphrase() {
-    return passphrase;
+    return passphrase
   },
 
   get list() {
-    return list || [];
+    return list || []
   },
 
   register(cb) {
-    callbacks.push(cb);
+    callbacks.push(cb)
   },
 
   unregister(cb) {
-    callbacks = callbacks.filter((other) => other !== cb);
+    callbacks = callbacks.filter((other) => other !== cb)
   },
 
-};
+}

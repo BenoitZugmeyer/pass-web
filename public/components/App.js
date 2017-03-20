@@ -1,11 +1,11 @@
-import { Component, h } from "preact";
-import Auth from "./Auth";
-import store from "../store";
-import List from "./List";
-import Search from "./Search";
-import { logout, search } from "../actions";
-import { stop } from "../domUtil";
-import { base, marginSize } from "../css";
+import { Component, h } from "preact"
+import Auth from "./Auth"
+import store from "../store"
+import List from "./List"
+import Search from "./Search"
+import { logout, search } from "../actions"
+import { stop } from "../domUtil"
+import { base, marginSize } from "../css"
 
 const ss = base.namespace("App").addRules({
   root: {
@@ -28,13 +28,13 @@ const ss = base.namespace("App").addRules({
     justifyContent: "space-between",
     marginBottom: marginSize,
   },
-});
+})
 
 export default class App extends Component {
   constructor() {
     super()
     this.state = { store }
-    this.updateStore = () => this.setState({ store });
+    this.updateStore = () => this.setState({ store })
   }
 
   componentDidMount() {
@@ -46,8 +46,8 @@ export default class App extends Component {
   }
 
   render(_, { store }) {
-    const isNewlyLogged = !this.wasLogged && store.loggedIn;
-    this.wasLogged = store.loggedIn;
+    const isNewlyLogged = !this.wasLogged && store.loggedIn
+    this.wasLogged = store.loggedIn
 
     return (
       <div class={ss("root")}>
@@ -62,7 +62,7 @@ export default class App extends Component {
         {store.loggedIn && <List list={store.list} />}
         {!store.loggedIn && <Auth />}
       </div>
-    );
+    )
   }
 
 }

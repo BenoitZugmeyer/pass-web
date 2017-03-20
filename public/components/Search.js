@@ -1,6 +1,6 @@
-import { h, Component } from "preact";
-import Icon from "./Icon";
-import { base, marginSize } from "../css";
+import { h, Component } from "preact"
+import Icon from "./Icon"
+import { base, marginSize } from "../css"
 
 const ss = base.namespace("Search").addRules({
 
@@ -34,34 +34,34 @@ const ss = base.namespace("Search").addRules({
       pointerEvents: "initial",
     },
 
-});
+})
 
 export default class Search extends Component {
 
   render({ onChange, focus }) {
     const triggerChange = () => {
-      if (!onChange || !this.input) return;
-      onChange(this.input.value);
-    };
+      if (!onChange || !this.input) return
+      onChange(this.input.value)
+    }
 
     const emptyInput = () => {
-      this.input.value = "";
-      triggerChange();
-    };
+      this.input.value = ""
+      triggerChange()
+    }
 
-    const hasValue = Boolean(this.input && this.input.value);
+    const hasValue = Boolean(this.input && this.input.value)
 
     return (
       <div class={ss("root")}>
         <input class={ss("textField")} ref={(el) => {
-          this.input = el;
-          if (focus && el) el.focus();
+          this.input = el
+          if (focus && el) el.focus()
         }} onKeyUp={triggerChange} />
         <div class={ss("button", hasValue && "buttonActive")} onClick={emptyInput}>
           <Icon name={hasValue ? "clean" : "search"} style={ss("searchIcon")} />
         </div>
       </div>
-    );
+    )
   }
 
 }

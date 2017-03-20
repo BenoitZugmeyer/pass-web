@@ -1,35 +1,35 @@
-"use strict";
+"use strict"
 
-const DEBUG = 1;
-const INFO = 2;
-const WARNING = 3;
-const ERROR = 4;
+const DEBUG = 1
+const INFO = 2
+const WARNING = 3
+const ERROR = 4
 
-let level = DEBUG;
+let level = DEBUG
 
 function setLevel(level_) {
-  level = level_;
+  level = level_
 }
 
 function formatMessage(msg) {
-  if (msg instanceof Error) return level <= DEBUG ? msg.stack : msg.message;
-  return String(msg);
+  if (msg instanceof Error) return level <= DEBUG ? msg.stack : msg.message
+  return String(msg)
 }
 
 function makeLogger(levelLabel, level_) {
   return function (msg) {
     if (level_ >= level) {
-      let result = "";
+      let result = ""
       if (Array.isArray(msg) && msg.raw) { // Template string
         for (let i = 0; i < msg.length; i++) {
-          if (i) result += formatMessage(arguments[i]);
-          result += msg[i];
+          if (i) result += formatMessage(arguments[i])
+          result += msg[i]
         }
       }
       else {
-        result = formatMessage(msg);
+        result = formatMessage(msg)
       }
-      process.stderr.write(`${levelLabel}: ${result}\n`);
+      process.stderr.write(`${levelLabel}: ${result}\n`)
     }
   }
 }
@@ -44,4 +44,4 @@ module.exports = {
   INFO,
   WARNING,
   ERROR,
-};
+}

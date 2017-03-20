@@ -1,6 +1,6 @@
-import { h } from "preact";
-import { copy } from "../selection";
-import { base, marginSize } from "../css";
+import { h } from "preact"
+import { copy } from "../selection"
+import { base, marginSize } from "../css"
 
 const ss = base.namespace("CopyIcon").addRules({
   root: {
@@ -11,7 +11,7 @@ const ss = base.namespace("CopyIcon").addRules({
     top: "-4px",
     margin: `0 ${marginSize}`,
   },
-});
+})
 
 export default ({ content, style, ...attrs }) => (
   <svg {...attrs}

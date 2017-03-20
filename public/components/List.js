@@ -1,11 +1,11 @@
-import { h, Component } from "preact";
-import Directory from "./Directory";
-import File from "./File";
-import { base, marginSize, borderRadius, boxShadow } from "../css";
+import { h, Component } from "preact"
+import Directory from "./Directory"
+import File from "./File"
+import { base, marginSize, borderRadius, boxShadow } from "../css"
 
 
-const transitionDelay = 0.5; // second
-const empty = {};
+const transitionDelay = 0.5 // second
+const empty = {}
 const ss = base.namespace("List").addRules({
   root: {
     display: "flex",
@@ -52,142 +52,142 @@ const ss = base.namespace("List").addRules({
     margin: marginSize,
   },
 
-});
+})
 
 export default class List extends Component {
 
   constructor() {
-    super();
+    super()
     this.state = {
       path: [],
       previousPath: null,
-    };
+    }
 
     this.setPath = (newPath) => {
-      this.setState(({ path }) => ({ previousPath: path.slice(), path: newPath }));
-    };
+      this.setState(({ path }) => ({ previousPath: path.slice(), path: newPath }))
+    }
   }
 
   updatePath(list) {
-    const path = this.state.path;
+    const path = this.state.path
     const findFileByName = (list, name) => {
       for (const file of list) {
-        if (file.name === name) return file;
+        if (file.name === name) return file
       }
-    };
+    }
 
     for (let i = 0; i < path.length; i += 1) {
-      const newChild = findFileByName(list, path[i].name);
+      const newChild = findFileByName(list, path[i].name)
       if (newChild) {
-        path[i] = newChild;
-        list = newChild.children;
-        if (!list) break;
+        path[i] = newChild
+        list = newChild.children
+        if (!list) break
       }
       else {
-        path.length = i;
-        break;
+        path.length = i
+        break
       }
     }
 
     while (list && list.length === 1) {
-      path.push(list[0]);
-      list = list[0].children;
+      path.push(list[0])
+      list = list[0].children
     }
   }
 
   adjustColumnWidths() {
-    if (this.props.list.length === 0) return;
+    if (this.props.list.length === 0) return
 
-    const columnWidth = 200;
-    const columnCount = this.state.path.length + 1;
-    const fullWidth = this.container.clientWidth;
-    const nodes = Array.from(this.container.childNodes);
+    const columnWidth = 200
+    const columnCount = this.state.path.length + 1
+    const fullWidth = this.container.clientWidth
+    const nodes = Array.from(this.container.childNodes)
 
     if (fullWidth > columnCount * columnWidth) {
       nodes.forEach((node, index) => {
         if (index >= columnCount) {
           // Shrink previous extra columns
-          node.style.width = "0";
+          node.style.width = "0"
         }
         else if (index >= columnCount - 1) {
           // Last column fills the extra space
-          const extraSpace = fullWidth - columnWidth * (columnCount - 1);
-          node.style.width = `${extraSpace}px`;
+          const extraSpace = fullWidth - columnWidth * (columnCount - 1)
+          node.style.width = `${extraSpace}px`
         }
         else {
           // Other columns have the default width
-          node.style.width = `${columnWidth}px`;
+          node.style.width = `${columnWidth}px`
         }
-      });
+      })
     }
     else {
-      const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0);
+      const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0)
 
       nodes.forEach((node, index) => {
         if (index >= columnCount) {
           // Shrink previous extra columns
-          node.style.width = "0";
+          node.style.width = "0"
         }
         else if (index >= columnCount - 2) {
           // Last two columns have the default width
-          node.style.width = `${columnWidth}px`;
+          node.style.width = `${columnWidth}px`
         }
         else {
           // Shrink other columns to fill the remaining space
-          node.style.width = `${remainingWidth}px`;
+          node.style.width = `${remainingWidth}px`
         }
-      });
+      })
     }
   }
 
   componentDidMount() {
-    this.adjustColumnWidths();
+    this.adjustColumnWidths()
   }
 
   componentDidUpdate() {
-    this.adjustColumnWidths();
+    this.adjustColumnWidths()
   }
 
   render({ list }, { path, previousPath }) {
 
-    this.updatePath(list);
+    this.updatePath(list)
 
-    const renderPath = path.slice();
+    const renderPath = path.slice()
     if (previousPath && previousPath.length > path.length) {
-      const isSubpath = path[path.length - 1] === previousPath[path.length - 1];
+      const isSubpath = path[path.length - 1] === previousPath[path.length - 1]
       for (const child of previousPath.slice(path.length)) {
-        renderPath.push(isSubpath ? child : empty);
+        renderPath.push(isSubpath ? child : empty)
       }
-      clearTimeout(this.redrawTimer);
+      clearTimeout(this.redrawTimer)
       this.redrawTimer = setTimeout(() => {
-        this.setState({ previousPath: null });
-      }, transitionDelay * 1000);
+        this.setState({ previousPath: null })
+      }, transitionDelay * 1000)
     }
 
     const renderColumn = (file, index) => {
-      let children, width;
-      const columnPath = renderPath.slice(0, index);
+      let children, width
+      const columnPath = renderPath.slice(0, index)
 
       if (file.children) {
         children = (
           <Directory
             onActiveChildChanged={(child) => {
-              if (!child) this.setPath(columnPath);
-              else this.setPath([...columnPath, child]);
+              if (!child) this.setPath(columnPath)
+              else this.setPath([...columnPath, child])
             }}
             activeChild={path[index]}
           >
             {file.children}
           </Directory>
-        );
+        )
       }
       else if (file !== empty) {
-        children = <File path={columnPath.map((f) => f.name)} />;
+        children = <File path={columnPath.map((f) => f.name)} />
       }
 
       if (previousPath && index > previousPath.length) {
         // New column, starts with an empty width
-        width = "0";
+        width = "0"
       }
 
       return (
@@ -197,8 +197,8 @@ export default class List extends Component {
             {children}
           </div>
         </div>
-      );
-    };
+      )
+    }
 
     return (
       <div class={ss("root")}>
@@ -212,7 +212,7 @@ export default class List extends Component {
           <div class={ss("noResult")}>No result</div>
         }
       </div>
-    );
+    )
   }
 
 }

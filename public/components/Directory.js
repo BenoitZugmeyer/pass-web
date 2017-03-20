@@ -1,19 +1,19 @@
-import {h} from "preact";
-import Line from "./Line";
+import {h} from "preact"
+import Line from "./Line"
 
 export default ({ children, activeChild, onActiveChildChanged=() => {} }) => {
 
   children.sort((a, b) => {
     // Sort directories first
-    if (Boolean(a.children) ^ Boolean(b.children)) return a.children ? -1 : 1;
+    if (Boolean(a.children) ^ Boolean(b.children)) return a.children ? -1 : 1
     // Then sort by name
-    return a.name < b.name ? -1 : 1;
-  });
+    return a.name < b.name ? -1 : 1
+  })
 
   return (
     <div>
       {children.map((child) => {
-        const isDirectory = child.children;
+        const isDirectory = child.children
         return <Line
           key={child.name}
           icon={isDirectory ? "directory" : "file"}

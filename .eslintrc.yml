@@ -5,12 +5,13 @@ extends:
   - plugin:react/recommended
 
 rules:
-  comma-dangle: [error, "always-multiline"]
+  comma-dangle: [error, always-multiline]
   no-constant-condition: 0
-  curly: [error, "multi-line"]
+  curly: [error, multi-line]
   no-var: error
   quotes: error
-  brace-style: [error, "stroustrup"]
+  brace-style: [error, stroustrup]
+  semi: [error, never]
 
   filenames/match-exported: error
   react/no-unknown-property: off

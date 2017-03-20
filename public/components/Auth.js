@@ -1,10 +1,10 @@
-"use strict";
+"use strict"
 
-import { Component, h } from "preact";
-import { signin } from "../actions";
-import { stop } from "../domUtil";
-import { catch_, finally_ } from "../promiseUtil";
-import { base, marginSize } from "../css";
+import { Component, h } from "preact"
+import { signin } from "../actions"
+import { stop } from "../domUtil"
+import { catch_, finally_ } from "../promiseUtil"
+import { base, marginSize } from "../css"
 
 const ss = base.namespace("Auth").addRules({
 
@@ -23,7 +23,7 @@ const ss = base.namespace("Auth").addRules({
     marginBottom: marginSize,
   },
 
-});
+})
 
 export default class Auth extends Component {
 
@@ -33,14 +33,14 @@ export default class Auth extends Component {
       passphrase: "",
       error: null,
       loading: false,
-    };
+    }
 
     this.submit = () => {
       this.setState({ loading: true })
       signin(this.state.passphrase)
       ::finally_(() => this.setState({ loading: false }))
-      ::catch_((error) => this.setState({ error }));
-    };
+      ::catch_((error) => this.setState({ error }))
+    }
   }
 
   render(props, {error, passphrase, loading}) {
@@ -58,6 +58,6 @@ export default class Auth extends Component {
         </button>
         {process.env.NODE_ENV === "demo" && <div>Hint: the demo passphrase is 'demo'.</div>}
       </form>
-    );
+    )
   }
 }

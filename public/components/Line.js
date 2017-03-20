@@ -1,10 +1,10 @@
-import {h} from "preact";
-import Icon from "./Icon";
-import { stop } from "../domUtil";
-import { base, marginSize, borderRadius } from "../css";
+import {h} from "preact"
+import Icon from "./Icon"
+import { stop } from "../domUtil"
+import { base, marginSize, borderRadius } from "../css"
 
-const background = "236, 240, 241";
-const activeBackground = "189, 195, 199";
+const background = "236, 240, 241"
+const activeBackground = "189, 195, 199"
 const ss = base.namespace("Line").addRules({
 
   root: {
@@ -50,7 +50,7 @@ const ss = base.namespace("Line").addRules({
     )`,
   },
 
-});
+})
 
 export default ({ title, icon, active=false, onClick=()=>{} }) => (
   <div class={ss("root", active && "active")} onMouseDown={stop()} onClick={stop(onClick)}>

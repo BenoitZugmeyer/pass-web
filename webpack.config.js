@@ -1,17 +1,17 @@
-"use strict";
+"use strict"
 /*eslint filenames/match-exported: off*/
 
-const path = require("path");
-const webpack = require("webpack");
+const path = require("path")
+const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 const getPath = (fullPath) => {
-  const args = fullPath.split("/");
-  args.unshift(__dirname);
-  return path.resolve(...args);
-};
+  const args = fullPath.split("/")
+  args.unshift(__dirname)
+  return path.resolve(...args)
+}
 
-const svgoConfig = {};
+const svgoConfig = {}
 
 let config = {
   context: getPath("public"),
@@ -36,7 +36,7 @@ let config = {
     loaders: [
       {
         exclude(path) {
-          return path.includes("/node_modules/") || path.includes("/sans-sel/");
+          return path.includes("/node_modules/") || path.includes("/sans-sel/")
         },
         test: /\.js$/,
         loader: "babel-loader",
@@ -54,7 +54,7 @@ let config = {
       },
     ],
   },
-};
+}
 
 if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "demo") {
   config.plugins.push(
@@ -64,10 +64,10 @@ if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "demo") {
         warnings: false,
       },
     })
-  );
+  )
 }
 else {
-  config.devtool = "source-map";
+  config.devtool = "source-map"
 }
 
-module.exports = config;
+module.exports = config

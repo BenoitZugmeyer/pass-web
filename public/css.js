@@ -1,8 +1,8 @@
-import sansSel from "sans-sel";
+import sansSel from "sans-sel"
 
-export const marginSize = "6px";
-export const borderRadius = "2px";
-export const boxShadow = "0.5px 0.5px 3px rgba(0, 0, 0, 0.5)";
+export const marginSize = "6px"
+export const borderRadius = "2px"
+export const boxShadow = "0.5px 0.5px 3px rgba(0, 0, 0, 0.5)"
 export const base = sansSel().addRules({
 
   input: {
@@ -38,4 +38,4 @@ export const base = sansSel().addRules({
     fontWeight: "bold",
   },
 
-});
+})
