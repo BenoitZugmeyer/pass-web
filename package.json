@@ -37,7 +37,7 @@
     "file-loader": "^0.9.0",
     "html-webpack-plugin": "^2.9.0",
     "preact": "^7.1.0",
-    "sans-sel": "^1.0.0-beta.1",
+    "sans-sel": "1.0.0-beta.1",
     "svgo": "^0.7.1",
     "svgo-loader": "^1.1.0",
     "webpack": "^1.12.8"
