@@ -38,7 +38,7 @@ const ss = base.namespace("Search").addRules({
 
 export default class Search extends Component {
 
-  render({ onChange, focus }) {
+  render({ onChange }) {
     const triggerChange = () => {
       if (!onChange || !this.input) return
       onChange(this.input.value)
@@ -53,15 +53,22 @@ export default class Search extends Component {
 
     return (
       <div class={ss("root")}>
-        <input class={ss("textField")} ref={(el) => {
-          this.input = el
-          if (focus && el) el.focus()
-        }} onKeyUp={triggerChange} />
+        <input
+          class={ss("textField")}
+          ref={(el) => {
+            this.input = el
+          }}
+          onKeyUp={triggerChange}
+        />
         <div class={ss("button", hasValue && "buttonActive")} onClick={emptyInput}>
           <Icon name={hasValue ? "clean" : "search"} style={ss("searchIcon")} />
         </div>
       </div>
     )
+  }
+
+  focus() {
+    this.input.focus()
   }
 
 }

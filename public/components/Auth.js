@@ -50,7 +50,9 @@ export default class Auth extends Component {
         <input
           class={ss("textField")}
           type="password"
-          ref={(el) => el && el.focus()}
+          ref={(el) => {
+            this.input = el
+          }}
           onChange={(event) => this.setState({ passphrase: event.target.value })}
           value={passphrase} />
         <button class={ss("button")} disabled={loading}>
@@ -59,5 +61,9 @@ export default class Auth extends Component {
         {process.env.NODE_ENV === "demo" && <div>Hint: the demo passphrase is 'demo'.</div>}
       </form>
     )
+  }
+
+  focus() {
+    this.input.focus()
   }
 }

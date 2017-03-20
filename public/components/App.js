@@ -37,8 +37,18 @@ export default class App extends Component {
     this.updateStore = () => this.setState({ store })
   }
 
+  focus() {
+    if (this.auth) this.auth.focus()
+    else this.search.focus()
+  }
+
   componentDidMount() {
     store.register(this.updateStore)
+    this.focus()
+  }
+
+  componentDidUpdate() {
+    this.focus()
   }
 
   componentWillUnmount() {
@@ -46,21 +56,25 @@ export default class App extends Component {
   }
 
   render(_, { store }) {
-    const isNewlyLogged = !this.wasLogged && store.loggedIn
-    this.wasLogged = store.loggedIn
-
     return (
       <div class={ss("root")}>
         {store.loggedIn && (
           <div class={ss("header")}>
-            <Search onChange={search} focus={isNewlyLogged} />
+            <Search
+              onChange={search}
+              ref={(search) => {
+                this.search = search
+              }}
+            />
             <button onClick={stop(logout)} class={ss("button")}>
               Logout
             </button>
           </div>
         )}
         {store.loggedIn && <List list={store.list} />}
-        {!store.loggedIn && <Auth />}
+        {!store.loggedIn && <Auth ref={(auth) => {
+          this.auth = auth
+        }} />}
       </div>
     )
   }
