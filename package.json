@@ -35,10 +35,10 @@
     "eslint": "^3.0.1",
     "eslint-plugin-filenames": "^1.0.0",
     "eslint-plugin-react": "^6.9.0",
-    "file-loader": "^0.10.1",
+    "file-loader": "^0.11.1",
     "html-webpack-plugin": "^2.9.0",
-    "preact": "^7.1.0",
-    "sans-sel": "1.0.0-beta.1",
+    "preact": "^8.1.0",
+    "sans-sel": "^1.0.0-beta.2",
     "svgo": "^0.7.1",
     "svgo-loader": "^1.1.0",
     "webpack": "^2.2.1"
