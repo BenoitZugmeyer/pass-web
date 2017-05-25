@@ -4,35 +4,35 @@ import { base, marginSize } from "../css"
 
 const ss = base.namespace("Search").addRules({
 
-    root: {
-      position: "relative",
-      flex: "1",
-      maxWidth: "300px",
-      marginRight: marginSize,
-    },
+  root: {
+    position: "relative",
+    flex: "1",
+    maxWidth: "300px",
+    marginRight: marginSize,
+  },
 
-    textField: {
-      inherit: "textField",
-      width: "100%",
-      boxSizing: "border-box",
-      paddingRight: `calc(20px + ${marginSize})`,
-    },
+  textField: {
+    inherit: "textField",
+    width: "100%",
+    boxSizing: "border-box",
+    paddingRight: `calc(20px + ${marginSize})`,
+  },
 
-    searchIcon: {
-    },
+  searchIcon: {
+  },
 
-    button: {
-      pointerEvents: "none",
-      position: "absolute",
-      right: "0",
-      top: "0",
-      padding: `5px ${marginSize}`,
-      cursor: "pointer",
-    },
+  button: {
+    pointerEvents: "none",
+    position: "absolute",
+    right: "0",
+    top: "0",
+    padding: `5px ${marginSize}`,
+    cursor: "pointer",
+  },
 
-    buttonActive: {
-      pointerEvents: "initial",
-    },
+  buttonActive: {
+    pointerEvents: "initial",
+  },
 
 })
 

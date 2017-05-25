@@ -52,7 +52,7 @@ const ss = base.namespace("Line").addRules({
 
 })
 
-export default ({ title, icon, active=false, onClick=()=>{} }) => (
+export default ({ title, icon, active=false, onClick=() => {} }) => (
   <div class={ss("root", active && "active")} onMouseDown={stop()} onClick={stop(onClick)}>
     {typeof icon === "string" ? <Icon name={icon} style={ss("icon")} /> : icon}
     {title}

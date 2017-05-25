@@ -1,4 +1,4 @@
-"use strict"
+
 /*eslint filenames/match-exported: off*/
 
 const path = require("path")
@@ -13,7 +13,7 @@ const getPath = (fullPath) => {
 
 const svgoConfig = {}
 
-let config = {
+const config = {
   context: getPath("public"),
   entry: [ "./main" ],
   output: {
@@ -45,7 +45,7 @@ let config = {
         test: /\.svg$/,
         loaders: [
           "file-loader?name=[path][name].[ext]?[hash]",
-          "svgo-loader?" + JSON.stringify(svgoConfig),
+          `svgo-loader?${JSON.stringify(svgoConfig)}`,
         ],
       },
       {

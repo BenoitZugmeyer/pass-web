@@ -3,16 +3,9 @@ parser: babel-eslint
 extends:
   - eslint:recommended
   - plugin:react/recommended
+  - benoitz
 
 rules:
-  comma-dangle: [error, always-multiline]
-  no-constant-condition: 0
-  curly: [error, multi-line]
-  no-var: error
-  quotes: error
-  brace-style: [error, stroustrup]
-  semi: [error, never]
-
   filenames/match-exported: error
   react/no-unknown-property: off
   react/prop-types: off
@@ -20,7 +13,6 @@ rules:
 
 env:
   node: true
-  es6: true
 
 plugins:
   - filenames

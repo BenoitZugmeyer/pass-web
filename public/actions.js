@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === "demo") {
 
     const indent = formated.match(/([\t ]*)\S/)
     if (indent) {
-      formated = formated.replace(new RegExp("^" + indent[1], "mg"), "")
+      formated = formated.replace(new RegExp(`^${indent[1]}`, "mg"), "")
     }
 
     return formated

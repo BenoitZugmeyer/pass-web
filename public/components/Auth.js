@@ -1,4 +1,4 @@
-"use strict"
+
 
 import { Component, h } from "preact"
 import { signin } from "../actions"

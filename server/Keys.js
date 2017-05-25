@@ -36,7 +36,7 @@ module.exports = class Keys {
       const emails = material.get_signed_userids().map((u) => u.get_email())
       const printableEmails = emails.length ? ` (${emails.join(", ")})` : ""
 
-      log.info`Add key ${keyId(id)}${printableEmails}`
+      log.info(`Add key ${keyId(id)}${printableEmails}`)
       this._keys.set(keyId(id), {
         manager,
         material,

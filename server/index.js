@@ -189,7 +189,7 @@ function launchApp(conf) {
   }
 
   app.use(conf.urlBaseDir, express.static(path.join(__dirname, "..", "dist")))
-  app.use(conf.urlBaseDir + "api", apiRouter(conf))
+  app.use(`${conf.urlBaseDir}api`, apiRouter(conf))
 
   const secureServer = Boolean(conf.key && conf.cert)
   let server
@@ -202,7 +202,7 @@ function launchApp(conf) {
   }
   else {
     if (conf.address !== "localhost" && conf.address !== "127.0.0.1") {
-      log.warning`Serving on a non-local address in non-secure HTTP is highly discouraged.`
+      log.warning("Serving on a non-local address in non-secure HTTP is highly discouraged.")
     }
     server = http.createServer(app)
   }
@@ -210,7 +210,7 @@ function launchApp(conf) {
   server.listen(conf.port, conf.address, function () {
     const address = this.address()
     const scheme = secureServer ? "https" : "http"
-    log.info`Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`
+    log.info(`Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`)
   })
 
   return new Promise((resolve, reject) => {
