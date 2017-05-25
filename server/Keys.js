@@ -57,7 +57,7 @@ module.exports = class Keys {
 
     if (!passphrase) throw new Error("passphrase is required")
 
-    const fetch = promiseUtil.wrapRun(function* (ids, opts) {
+    const fetch = async (ids, opts) => {
       let error
       for (let index = 0; index < ids.length; index++) {
         const requestId = keyId(ids[index])
@@ -70,13 +70,13 @@ module.exports = class Keys {
           continue
         }
 
-        if ((yield this.verify(requestId, passphrase)) && key.material.key.can_perform(opts)) {
+        if ((await this.verify(requestId, passphrase)) && key.material.key.can_perform(opts)) {
           return { manager: key.manager, index }
         }
       }
 
       throw (error || new KeyError("No key found"))
-    }.bind(this))
+    }
 
     return unbox({
       raw: content,

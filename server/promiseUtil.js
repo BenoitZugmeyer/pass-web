@@ -1,41 +1,5 @@
 "use strict"
 
-const runIterator = (iterator) =>
-  new Promise((resolve, reject) => {
-    const iterate = (next, value) => {
-      let ret
-      try {
-        ret = next ? iterator.next(value) : iterator.throw(value)
-      }
-      catch (error) {
-        reject(error)
-        return
-      }
-
-      if (ret.done) {
-        resolve(ret.value)
-        return
-      }
-
-      const promise = Array.isArray(ret.value) ?
-        Promise.all(ret.value) :
-        Promise.resolve(ret.value)
-      promise.then(
-        (value) => iterate(true, value),
-        (error) => iterate(false, error)
-      )
-    }
-
-    iterate(true)
-  })
-
-const run = (generator) => runIterator(generator())
-
-const wrapRun = (generator) =>
-  function () {
-    return runIterator(generator.apply(this, arguments))
-  }
-
 const wrapCPS = (fn, options) => {
   if (typeof fn !== "function") throw new Error("fn is not a function")
 
@@ -63,6 +27,4 @@ const wrapCPS = (fn, options) => {
 
 module.exports = {
   wrapCPS,
-  run,
-  wrapRun,
 }
