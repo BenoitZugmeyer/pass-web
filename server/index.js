@@ -169,7 +169,7 @@ function apiRouter(conf) {
     const rawContent = await fileRead(filePath)
     const content = await conf.keys.decrypt(rawContent, req.body.passphrase)
     if (!content.length) throw new Error("The file seems empty")
-    res.json(content[0].toString())
+    res.json(content[0].toString("utf-8"))
   }))
 
   return router
