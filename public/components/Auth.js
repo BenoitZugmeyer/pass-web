@@ -39,7 +39,7 @@ export default class Auth extends Component {
       this.setState({ loading: true })
       signin(this.state.passphrase)
       ::finally_(() => this.setState({ loading: false }))
-      ::catch_((error) => this.setState({ error }))
+      ::catch_((error) => this.setState({ error, passphrase: "" }))
     }
   }
 
@@ -53,7 +53,7 @@ export default class Auth extends Component {
           ref={(el) => {
             this.input = el
           }}
-          onChange={(event) => this.setState({ passphrase: event.target.value })}
+          onInput={(event) => this.setState({ passphrase: event.target.value, error: null })}
           value={passphrase} />
         <button class={ss("button")} disabled={loading}>
           Login
