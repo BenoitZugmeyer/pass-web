@@ -56,17 +56,4 @@ const config = {
   },
 }
 
-if (process.env.NODE_ENV === "production" || process.env.NODE_ENV === "demo") {
-  config.plugins.push(
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-      },
-    })
-  )
-}
-else {
-  config.devtool = "source-map"
-}
-
 module.exports = config

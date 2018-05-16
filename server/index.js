@@ -59,8 +59,8 @@ function validFilePath(filePath) {
 function filterFiles(name, stat) {
   return (
     stat.isDirectory() ? validDirectoryName(name) :
-    stat.isFile() ? validFileName(name) :
-      false
+      stat.isFile() ? validFileName(name) :
+        false
   )
 }
 
@@ -220,7 +220,7 @@ function launchApp(conf) {
 
 function printHelp() {
   process.stderr.write(
-      `\
+    `\
 pass-web [OPTION]... PGPKEY...
 
 Launch the HTTP server. The PGPKEY arguments are paths to the exported (armored, encrypted) pgp secret keys.
@@ -321,4 +321,4 @@ function printVersion() {
     urlBaseDir,
   })
 })()
-.catch(log.error)
+  .catch(log.error)

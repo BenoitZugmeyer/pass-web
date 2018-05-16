@@ -146,7 +146,7 @@ export default class File extends Component {
     const selectPassword = () => select(passwordLineElement)
 
     return [
-      <div>
+      <div> {/*eslint-disable-line react/jsx-key*/}
         {passwordLine && (
           <span
             class={ss("passwordSelector")}
@@ -161,7 +161,7 @@ export default class File extends Component {
         )}
         <CopyIcon content={passwordLine} />
       </div>,
-      <div class={ss("rest")}>
+      <div class={ss("rest")}> {/*eslint-disable-line react/jsx-key*/}
         {renderer.render(rest.trimRight())}
       </div>,
     ]
@@ -172,7 +172,7 @@ export default class File extends Component {
       <div class={ss("root")}>
         {loading ? <div>Loading...</div> :
           error ? <div class={ss("error")}>Error: {error.message}</div> :
-          this.renderLoaded(content)}
+            this.renderLoaded(content)}
       </div>
     )
   }

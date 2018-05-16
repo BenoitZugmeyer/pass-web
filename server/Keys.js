@@ -49,7 +49,7 @@ module.exports = class Keys {
 
     return (
       promiseUtil.wrapCPS(material.unlock.bind(material))({ passphrase })
-      .then(() => true, () => false)
+        .then(() => true, () => false)
     )
   }
 
@@ -84,8 +84,8 @@ module.exports = class Keys {
       keyfetch: {
         fetch(ids, opts, cb) {
           fetch(ids, opts)
-          .then((result) => cb(null, result.manager, result.index),
-                (error) => cb(error))
+            .then((result) => cb(null, result.manager, result.index),
+              (error) => cb(error))
         },
       },
     })
@@ -118,8 +118,8 @@ module.exports = class Keys {
   addFromFile(filePath) {
     return (
       fileRead(filePath)
-      .then((armored) => importFromArmoredPGP({ armored }))
-      .then((manager) => this.add(manager))
+        .then((armored) => importFromArmoredPGP({ armored }))
+        .then((manager) => this.add(manager))
     )
   }
 

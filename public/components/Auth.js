@@ -58,7 +58,7 @@ export default class Auth extends Component {
         <button class={ss("button")} disabled={loading}>
           Login
         </button>
-        {process.env.NODE_ENV === "demo" && <div>Hint: the demo passphrase is 'demo'.</div>}
+        {process.env.NODE_ENV === "demo" && <div>Hint: the demo passphrase is &#39;demo&#39;.</div>}
       </form>
     )
   }

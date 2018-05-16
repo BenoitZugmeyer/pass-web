@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint . || true",
-    "prepublish": "rm -rf dist && NODE_ENV=production webpack",
-    "update-demo": "NODE_ENV=demo webpack && git checkout gh-pages && mv dist/* . && rm -r dist && git add -u && git commit -m 'Update demo'",
+    "prepublish": "rm -rf dist && webpack --mode production",
+    "update-demo": "NODE_ENV=demo webpack --mode production && git checkout gh-pages && mv dist/* . && rm -r dist && git add -u && git commit -m 'Update demo'",
     "update-arch-package": "cd 'package/Arch Linux'; perl -ni -e \"s/(?<=^_npmpkgver=).*/$npm_package_version/; s/(?<=^pkgver=).*/${npm_package_version//-/.}/; print unless /^\\w+sums=\\(/\" PKGBUILD; makepkg -g >> PKGBUILD"
   },
   "bin": {
@@ -27,22 +27,24 @@
   },
   "devDependencies": {
     "babel-core": "^6.5.2",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.2.4",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
     "babel-preset-es2015": "^6.5.0",
     "babel-preset-react": "^6.22.0",
     "babel-preset-stage-0": "^6.5.0",
-    "eslint": "^3.0.1",
+    "eslint": "^4.19.1",
     "eslint-config-benoitz": "^1.0.0",
     "eslint-plugin-filenames": "^1.0.0",
-    "eslint-plugin-react": "^6.9.0",
-    "file-loader": "^0.11.1",
-    "html-webpack-plugin": "^2.9.0",
+    "eslint-plugin-react": "^7.8.2",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
     "preact": "^8.1.0",
     "sans-sel": "^1.0.0-beta.2",
-    "svgo": "^0.7.1",
-    "svgo-loader": "^1.1.0",
-    "webpack": "^2.2.1"
+    "svgo": "^1.0.5",
+    "svgo-loader": "^2.1.0",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.3",
+    "webpack-dev-server": "^3.1.4"
   },
   "keywords": [
     "pass",
