@@ -44,8 +44,10 @@ module.exports = class Keys {
     }
   }
 
-  verify(id, passphrase) {
-    const material = this._get(id).material
+  verify(ids, passphrase) {
+    const key = ids.reduce((key, id) => key || this._get(id), null)
+    if (!key) throw new KeyError("No key found")
+    const material = key.material
 
     return (
       promiseUtil.wrapCPS(material.unlock.bind(material))({ passphrase })
@@ -58,24 +60,17 @@ module.exports = class Keys {
     if (!passphrase) throw new Error("passphrase is required")
 
     const fetch = async (ids, opts) => {
-      let error
       for (let index = 0; index < ids.length; index++) {
         const requestId = keyId(ids[index])
-        let key
-        try {
-          key = this._getById(requestId)
-        }
-        catch (e) {
-          error = e
-          continue
-        }
+        const key = this._getById(requestId)
+        if (!key) continue
 
         if ((await this.verify(requestId, passphrase)) && key.material.key.can_perform(opts)) {
           return { manager: key.manager, index }
         }
       }
 
-      throw (error || new KeyError("No key found"))
+      throw new KeyError("No key found")
     }
 
     return unbox({
@@ -101,7 +96,6 @@ module.exports = class Keys {
 
   _getById(id) {
     id = keyId(id)
-    if (!this._keys.has(id)) throw new KeyError(`Key ${id} not found`)
     return this._keys.get(id)
   }
 
@@ -111,8 +105,6 @@ module.exports = class Keys {
         if (userid.get_email() === email) return key
       }
     }
-
-    throw new KeyError(`Key with email ${email} not found`)
   }
 
   addFromFile(filePath) {

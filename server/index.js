@@ -64,7 +64,7 @@ function filterFiles(name, stat) {
   )
 }
 
-async function getGPGId(rootPath) {
+async function getGPGIds(rootPath) {
   const stat = await fileStat(rootPath)
 
   if (stat.isDirectory()) {
@@ -80,24 +80,27 @@ async function getGPGId(rootPath) {
       }
     }
     if (gpgStat && gpgStat.isFile()) {
-      return (await fileRead(gpgIdPath, { encoding: "utf-8" })).trim()
+      return (await fileRead(gpgIdPath, { encoding: "utf-8" }))
+        .split("\n")
+        .map((id) => id.trim())
+        .filter(Boolean)
     }
   }
 
   const parentPath = path.resolve(rootPath, "..")
   if (rootPath === parentPath) throw new Error("No .gpg-id found")
 
-  return getGPGId(parentPath)
+  return getGPGIds(parentPath)
 }
 
 async function auth(conf, requestPath, passphrase) {
-  const gpgId = await getGPGId(requestPath || conf.passwordStorePath)
+  const gpgIds = await getGPGIds(requestPath || conf.passwordStorePath)
 
-  if (!(await conf.keys.verify(gpgId, passphrase))) {
+  if (!(await conf.keys.verify(gpgIds, passphrase))) {
     throw new AuthError("Bad passphrase")
   }
 
-  return gpgId
+  return gpgIds
 }
 
 function apiRouter(conf) {
