@@ -5379,9 +5379,9 @@ safe-regex@^1.1.0:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
 
-sans-sel@^1.0.0-beta.2:
-  version "1.0.0-dev.1"
-  resolved "https://registry.yarnpkg.com/sans-sel/-/sans-sel-1.0.0-dev.1.tgz#8bedc9937f9ddacc639f6e699a0854f4f22ab085"
+sans-sel@1.0.0-beta.2:
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/sans-sel/-/sans-sel-1.0.0-beta.2.tgz#8db4b5778ecbf9a031f4295bfd932846c39e499f"
 
 sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
