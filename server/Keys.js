@@ -47,8 +47,11 @@ module.exports = class Keys {
   verify(ids, passphrase) {
     const key = ids.reduce((key, id) => key || this._get(id), null)
     if (!key) throw new KeyError("No key found")
-    const material = key.material
+    return this.verifyKey(key, passphrase)
+  }
 
+  verifyKey(key, passphrase) {
+    const material = key.material
     return (
       promiseUtil.wrapCPS(material.unlock.bind(material))({ passphrase })
         .then(() => true, () => false)
@@ -65,7 +68,7 @@ module.exports = class Keys {
         const key = this._getById(requestId)
         if (!key) continue
 
-        if ((await this.verify(requestId, passphrase)) && key.material.key.can_perform(opts)) {
+        if ((await this.verifyKey(key, passphrase)) && key.material.key.can_perform(opts)) {
           return { manager: key.manager, index }
         }
       }
