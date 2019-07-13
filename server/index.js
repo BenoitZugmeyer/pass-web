@@ -90,8 +90,10 @@ function printVersion() {
     args.store || path.join(process.env.HOME, ".password-store"),
   )
   const passwordStoreStat = await fileStat(passwordStorePath)
-  if (!passwordStoreStat.isDirectory())
-    throw new Error(`${passwordStorePath} is not a directory`)
+  if (!passwordStoreStat.isDirectory()) {
+    log.error(`${passwordStorePath} is not a directory`)
+    process.exit(1)
+  }
 
   const keys = new Keys()
   await Promise.all(args._.slice(2).map(key => keys.addFromFile(key)))
@@ -100,7 +102,7 @@ function printVersion() {
 
   if (keys.isEmpty()) {
     log.error("No key added. Use pass-web --help for more information.")
-    return
+    process.exit(1)
   }
 
   const urlBaseDirArg = (args["url-base-dir"] || "").replace(/^\/+|\/+$/g, "")
@@ -116,4 +118,7 @@ function printVersion() {
     htpasswd: args.htpasswd || false,
     urlBaseDir,
   })
-})().catch(log.error)
+})().catch(error => {
+  log.error(error)
+  process.exit(1)
+})

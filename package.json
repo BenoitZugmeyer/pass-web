@@ -4,7 +4,7 @@
   "description": "A web interface for pass (password-store)",
   "main": "server/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "lint": "eslint .",
     "prepublish": "rm -rf dist && webpack --mode production",
     "update-demo": "NODE_ENV=demo webpack --mode production && git checkout gh-pages && mv dist/* . && rm -r dist && git add -u && git commit -m 'Update demo'",
@@ -38,11 +38,14 @@
     "eslint-plugin-react": "^7.8.2",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
+    "jest": "^24.8.0",
+    "node-fetch": "^2.6.0",
     "preact": "^8.1.0",
     "prettier": "^1.18.2",
     "sans-sel": "1.0.0-beta.2",
     "svgo": "^1.0.5",
     "svgo-loader": "^2.1.0",
+    "tmp-promise": "^2.0.2",
     "webpack": "^4.8.3",
     "webpack-cli": "^2.1.3",
     "webpack-dev-server": "^3.1.4"
