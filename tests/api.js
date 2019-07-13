@@ -84,6 +84,10 @@ function withPassWeb(args = []) {
     fs.mkdirSync(storePath)
     fs.writeFileSync(path.join(storePath, ".gpg-id"), "user@example.com")
     fs.writeFileSync(path.join(storePath, "foo.gpg"), await encrypt("foo"))
+    fs.writeFileSync(
+      path.join(storePath, "armored.gpg"),
+      await encrypt("foo", { armored: true }),
+    )
     passWeb = await launchPassWeb(["-s", storePath, keyPath, ...args])
   })
 
@@ -137,6 +141,7 @@ describe("/api/list", () => {
 
   test("Returns the list of the files", async () => {
     expect(await fetchAPI("list", { passphrase: "abc" })).toEqual([
+      { name: "armored.gpg" },
       { name: "foo.gpg" },
     ])
   })
@@ -160,6 +165,12 @@ describe("/api/get", () => {
   test("Get a raw file", async () => {
     expect(
       await fetchAPI("get", { passphrase: "abc", path: ["foo.gpg"] }),
+    ).toEqual("foo")
+  })
+
+  test("Get an armored file", async () => {
+    expect(
+      await fetchAPI("get", { passphrase: "abc", path: ["armored.gpg"] }),
     ).toEqual("foo")
   })
 })

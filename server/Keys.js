@@ -79,9 +79,18 @@ module.exports = class Keys {
       throw new KeyError("No key found")
     }
 
+    let contentOptions
+    if (content.includes("-----BEGIN PGP MESSAGE-----")) {
+      contentOptions = { armored: content }
+    } else {
+      contentOptions = {
+        raw: content,
+        msg_type: kbpgp.const.openpgp.message_types.generic,
+      }
+    }
+
     return unbox({
-      raw: content,
-      msg_type: kbpgp.const.openpgp.message_types.generic,
+      ...contentOptions,
       keyfetch: {
         fetch(ids, opts, cb) {
           fetch(ids, opts).then(
