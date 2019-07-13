@@ -99,13 +99,23 @@ class Renderer {
 const renderer = new Renderer()
 
 renderer.add(/\bhttps?:\/\/\S+/, match => (
-  <a class={ss("link")} href={match[0]} target="_blank">
+  <a
+    class={ss("link")}
+    href={match[0]}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     {match[0]}
   </a>
 ))
 
 renderer.add(/\S+@\S+/, match => (
-  <a class={ss("link")} href={`mailto:${match[0]}`} target="_blank">
+  <a
+    class={ss("link")}
+    href={`mailto:${match[0]}`}
+    target="_blank"
+    rel="noopener noreferrer"
+  >
     {match[0]}
   </a>
 ))
