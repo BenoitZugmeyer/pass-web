@@ -1,5 +1,8 @@
 # pass-web
 
+[![NPM version](https://img.shields.io/npm/v/pass-web.svg)](https://www.npmjs.com/package/pass-web)
+[![Build Status](https://travis-ci.org/BenoitZugmeyer/pass-web.svg?branch=master)](https://travis-ci.org/BenoitZugmeyer/pass-web)
+
 A web interface for [pass](http://www.passwordstore.org/) (password-store).
 
 ## Install
