@@ -3,10 +3,10 @@
 const wrapCPS = (fn, options) => {
   if (typeof fn !== "function") throw new Error("fn is not a function")
 
-  return function () {
+  return function() {
     const args = Array.from(arguments)
     return new Promise((resolve, reject) => {
-      args.push(function () {
+      args.push(function() {
         const resultArgs = Array.from(arguments)
         const error = options && options.noError ? null : resultArgs.shift()
 
@@ -17,8 +17,7 @@ const wrapCPS = (fn, options) => {
             result[options.multi[i]] = resultArgs[i]
           }
           resolve(result)
-        }
-        else resolve(resultArgs[0])
+        } else resolve(resultArgs[0])
       })
       fn(...args)
     })

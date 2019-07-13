@@ -14,7 +14,8 @@ const ss = base.namespace("CopyIcon").addRules({
 })
 
 export default ({ content, style, ...attrs }) => (
-  <svg {...attrs}
+  <svg
+    {...attrs}
     class={ss("root", style)}
     xmlns="http://www.w3.org/2000/svg"
     width="20"

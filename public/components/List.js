@@ -3,7 +3,6 @@ import Directory from "./Directory"
 import File from "./File"
 import { base, marginSize, borderRadius, boxShadow } from "../css"
 
-
 const transitionDelay = 0.5 // second
 const empty = {}
 const ss = base.namespace("List").addRules({
@@ -51,11 +50,9 @@ const ss = base.namespace("List").addRules({
     inherit: "error",
     margin: marginSize,
   },
-
 })
 
 export default class List extends Component {
-
   constructor() {
     super()
     this.state = {
@@ -63,8 +60,11 @@ export default class List extends Component {
       previousPath: null,
     }
 
-    this.setPath = (newPath) => {
-      this.setState(({ path }) => ({ previousPath: path.slice(), path: newPath }))
+    this.setPath = newPath => {
+      this.setState(({ path }) => ({
+        previousPath: path.slice(),
+        path: newPath,
+      }))
     }
   }
 
@@ -82,8 +82,7 @@ export default class List extends Component {
         path[i] = newChild
         list = newChild.children
         if (!list) break
-      }
-      else {
+      } else {
         path.length = i
         break
       }
@@ -108,31 +107,29 @@ export default class List extends Component {
         if (index >= columnCount) {
           // Shrink previous extra columns
           node.style.width = "0"
-        }
-        else if (index >= columnCount - 1) {
+        } else if (index >= columnCount - 1) {
           // Last column fills the extra space
           const extraSpace = fullWidth - columnWidth * (columnCount - 1)
           node.style.width = `${extraSpace}px`
-        }
-        else {
+        } else {
           // Other columns have the default width
           node.style.width = `${columnWidth}px`
         }
       })
-    }
-    else {
-      const remainingWidth = Math.max((fullWidth - 2 * columnWidth) / (columnCount - 2), 0)
+    } else {
+      const remainingWidth = Math.max(
+        (fullWidth - 2 * columnWidth) / (columnCount - 2),
+        0,
+      )
 
       nodes.forEach((node, index) => {
         if (index >= columnCount) {
           // Shrink previous extra columns
           node.style.width = "0"
-        }
-        else if (index >= columnCount - 2) {
+        } else if (index >= columnCount - 2) {
           // Last two columns have the default width
           node.style.width = `${columnWidth}px`
-        }
-        else {
+        } else {
           // Shrink other columns to fill the remaining space
           node.style.width = `${remainingWidth}px`
         }
@@ -149,7 +146,6 @@ export default class List extends Component {
   }
 
   render({ list }, { path, previousPath }) {
-
     this.updatePath(list)
 
     const renderPath = path.slice()
@@ -171,7 +167,7 @@ export default class List extends Component {
       if (file.children) {
         children = (
           <Directory
-            onActiveChildChanged={(child) => {
+            onActiveChildChanged={child => {
               if (!child) this.setPath(columnPath)
               else this.setPath([...columnPath, child])
             }}
@@ -180,9 +176,8 @@ export default class List extends Component {
             {file.children}
           </Directory>
         )
-      }
-      else if (file !== empty) {
-        children = <File path={columnPath.map((f) => f.name)} />
+      } else if (file !== empty) {
+        children = <File path={columnPath.map(f => f.name)} />
       }
 
       if (previousPath && index > previousPath.length) {
@@ -202,17 +197,15 @@ export default class List extends Component {
 
     return (
       <div class={ss("root")}>
-        {list.length ?
-          (
-            <div class={ss("container")} ref={(el) => this.container = el}>
-              {renderColumn({ children: list }, 0)}
-              {renderPath.map((file, i) => renderColumn(file, i + 1))}
-            </div>
-          ) :
+        {list.length ? (
+          <div class={ss("container")} ref={el => (this.container = el)}>
+            {renderColumn({ children: list }, 0)}
+            {renderPath.map((file, i) => renderColumn(file, i + 1))}
+          </div>
+        ) : (
           <div class={ss("noResult")}>No result</div>
-        }
+        )}
       </div>
     )
   }
-
 }

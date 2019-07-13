@@ -4,7 +4,6 @@ export const marginSize = "6px"
 export const borderRadius = "2px"
 export const boxShadow = "0.5px 0.5px 3px rgba(0, 0, 0, 0.5)"
 export const base = sansSel().addRules({
-
   input: {
     font: "inherit",
     padding: "6px 12px",
@@ -37,5 +36,4 @@ export const base = sansSel().addRules({
     color: "#C0392B",
     fontWeight: "bold",
   },
-
 })

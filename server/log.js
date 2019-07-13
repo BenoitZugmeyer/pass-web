@@ -17,16 +17,16 @@ function formatMessage(msg) {
 }
 
 function makeLogger(levelLabel, level_) {
-  return function (msg) {
+  return function(msg) {
     if (level_ >= level) {
       let result = ""
-      if (Array.isArray(msg) && msg.raw) { // Template string
+      if (Array.isArray(msg) && msg.raw) {
+        // Template string
         for (let i = 0; i < msg.length; i++) {
           if (i) result += formatMessage(arguments[i])
           result += msg[i]
         }
-      }
-      else {
+      } else {
         result = formatMessage(msg)
       }
       process.stderr.write(`${levelLabel}: ${result}\n`)

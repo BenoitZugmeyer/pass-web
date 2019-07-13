@@ -1,0 +1,15 @@
+*.bash
+*.ejs
+*.key
+*.png
+*.svg
+/.editorconfig
+/.eslintignore
+/.gitignore
+/.npmignore
+/.prettierignore
+/LICENSE
+/dist
+/package/*
+/test-store/*
+/yarn.lock

@@ -1,11 +1,10 @@
-
 /*eslint filenames/match-exported: off*/
 
 const path = require("path")
 const webpack = require("webpack")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 
-const getPath = (fullPath) => {
+const getPath = fullPath => {
   const args = fullPath.split("/")
   args.unshift(__dirname)
   return path.resolve(...args)
@@ -15,7 +14,7 @@ const svgoConfig = {}
 
 const config = {
   context: getPath("public"),
-  entry: [ "./main" ],
+  entry: ["./main"],
   output: {
     path: getPath("dist"),
     filename: "main.js",
@@ -29,7 +28,7 @@ const config = {
       "process.env": {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV || ""),
       },
-      "__DEV__": process.env.NODE_ENV !== "production",
+      __DEV__: process.env.NODE_ENV !== "production",
     }),
   ],
   module: {

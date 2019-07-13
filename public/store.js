@@ -1,14 +1,13 @@
 let callbacks = []
 
 function emit() {
-  callbacks.forEach((cb) => cb())
+  callbacks.forEach(cb => cb())
 }
 
 let list = false
 let passphrase = false
 
 export default {
-
   setList(list_) {
     list = list_
     emit()
@@ -40,7 +39,6 @@ export default {
   },
 
   unregister(cb) {
-    callbacks = callbacks.filter((other) => other !== cb)
+    callbacks = callbacks.filter(other => other !== cb)
   },
-
 }

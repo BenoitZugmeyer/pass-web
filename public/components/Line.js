@@ -1,4 +1,4 @@
-import {h} from "preact"
+import { h } from "preact"
 import Icon from "./Icon"
 import { stop } from "../domUtil"
 import { base, marginSize, borderRadius } from "../css"
@@ -6,7 +6,6 @@ import { base, marginSize, borderRadius } from "../css"
 const background = "236, 240, 241"
 const activeBackground = "189, 195, 199"
 const ss = base.namespace("Line").addRules({
-
   root: {
     position: "relative",
     cursor: "pointer",
@@ -49,11 +48,14 @@ const ss = base.namespace("Line").addRules({
     rgba(${activeBackground}, 1) 100%
     )`,
   },
-
 })
 
-export default ({ title, icon, active=false, onClick=() => {} }) => (
-  <div class={ss("root", active && "active")} onMouseDown={stop()} onClick={stop(onClick)}>
+export default ({ title, icon, active = false, onClick = () => {} }) => (
+  <div
+    class={ss("root", active && "active")}
+    onMouseDown={stop()}
+    onClick={stop(onClick)}
+  >
     {typeof icon === "string" ? <Icon name={icon} style={ss("icon")} /> : icon}
     {title}
     <div class={ss(active ? "activeShadow" : "shadow")} />

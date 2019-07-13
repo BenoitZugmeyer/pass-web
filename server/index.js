@@ -23,20 +23,24 @@ class AuthError extends Error {}
 async function listDirectory(root, filter) {
   const files = await directoryRead(root)
 
-  const result = await Promise.all(files.map(async (name) => {
-    const filePath = path.join(root, name)
-    const stat = await fileStat(filePath)
-    if (!filter || filter(name, stat)) {
-      return stat.isDirectory() ? {
-        name,
-        children: await listDirectory(filePath, filter),
-      } : {
-        name,
+  const result = await Promise.all(
+    files.map(async name => {
+      const filePath = path.join(root, name)
+      const stat = await fileStat(filePath)
+      if (!filter || filter(name, stat)) {
+        return stat.isDirectory()
+          ? {
+              name,
+              children: await listDirectory(filePath, filter),
+            }
+          : {
+              name,
+            }
       }
-    }
-  }))
+    }),
+  )
 
-  return result.filter((file) => file)
+  return result.filter(file => file)
 }
 
 function validDirectoryName(name) {
@@ -51,17 +55,17 @@ function validFilePath(filePath) {
   const splitted = filePath.split(path.sep)
   return Boolean(
     splitted.length &&
-    splitted.slice(0, -1).every(validDirectoryName) &&
-    validFileName(splitted[splitted.length - 1])
+      splitted.slice(0, -1).every(validDirectoryName) &&
+      validFileName(splitted[splitted.length - 1]),
   )
 }
 
 function filterFiles(name, stat) {
-  return (
-    stat.isDirectory() ? validDirectoryName(name) :
-      stat.isFile() ? validFileName(name) :
-        false
-  )
+  return stat.isDirectory()
+    ? validDirectoryName(name)
+    : stat.isFile()
+    ? validFileName(name)
+    : false
 }
 
 async function getGPGIds(rootPath) {
@@ -72,8 +76,7 @@ async function getGPGIds(rootPath) {
     let gpgStat
     try {
       gpgStat = await fileStat(gpgIdPath)
-    }
-    catch (e) {
+    } catch (e) {
       // Ignore ENOENT errors, just check for parent directory
       if (e.code !== "ENOENT") {
         log.error(e)
@@ -82,7 +85,7 @@ async function getGPGIds(rootPath) {
     if (gpgStat && gpgStat.isFile()) {
       return (await fileRead(gpgIdPath, { encoding: "utf-8" }))
         .split("\n")
-        .map((id) => id.trim())
+        .map(id => id.trim())
         .filter(Boolean)
     }
   }
@@ -121,8 +124,7 @@ function apiRouter(conf) {
     return async (req, res, next) => {
       try {
         await gen(req, res, next)
-      }
-      catch (error) {
+      } catch (error) {
         log.debug(error)
         sendError(res, error)
       }
@@ -132,48 +134,55 @@ function apiRouter(conf) {
   async function getSecurePath(requestPath) {
     try {
       if (!Array.isArray(requestPath)) return
-      if (requestPath.some((p) => typeof p !== "string")) return
+      if (requestPath.some(p => typeof p !== "string")) return
 
-      const filePath = await realpath(path.resolve(
-        conf.passwordStorePath,
-        path.join(...requestPath)
-      ))
+      const filePath = await realpath(
+        path.resolve(conf.passwordStorePath, path.join(...requestPath)),
+      )
 
       // Make sure the path is inside passwordStorePath and isn't in a dotted directory/file
-      if (validFilePath(path.relative(conf.passwordStorePath, filePath))) return filePath
-    }
-    catch (e) {
+      if (validFilePath(path.relative(conf.passwordStorePath, filePath)))
+        return filePath
+    } catch (e) {
       log.debug(e)
     }
   }
 
-  router.use(wrap((req, res, next) => {
-    if (!req.body) throw new InvalidParameter("No request body")
-    if (!req.body.passphrase) throw new InvalidParameter("No passphrase")
-    req.auth = (requestPath) => auth(conf, requestPath, req.body.passphrase)
-    next()
-  }))
+  router.use(
+    wrap((req, res, next) => {
+      if (!req.body) throw new InvalidParameter("No request body")
+      if (!req.body.passphrase) throw new InvalidParameter("No passphrase")
+      req.auth = requestPath => auth(conf, requestPath, req.body.passphrase)
+      next()
+    }),
+  )
 
-  router.post("/list", wrap(async (req, res) => {
-    await req.auth()
-    res.json(await listDirectory(conf.passwordStorePath, filterFiles))
-  }))
+  router.post(
+    "/list",
+    wrap(async (req, res) => {
+      await req.auth()
+      res.json(await listDirectory(conf.passwordStorePath, filterFiles))
+    }),
+  )
 
-  router.post("/get", wrap(async (req, res) => {
-    const filePath = await getSecurePath(req.body.path)
+  router.post(
+    "/get",
+    wrap(async (req, res) => {
+      const filePath = await getSecurePath(req.body.path)
 
-    // Always authenticate. We shouldn't throw any exception related to the file path before
-    // authentication, as it could be a privacy leak (= an attacker could craft queries to check if
-    // a file exists)
-    await req.auth(filePath)
+      // Always authenticate. We shouldn't throw any exception related to the file path before
+      // authentication, as it could be a privacy leak (= an attacker could craft queries to check if
+      // a file exists)
+      await req.auth(filePath)
 
-    if (!filePath) throw new InvalidParameter("Invalid path parameter")
+      if (!filePath) throw new InvalidParameter("Invalid path parameter")
 
-    const rawContent = await fileRead(filePath)
-    const content = await conf.keys.decrypt(rawContent, req.body.passphrase)
-    if (!content.length) throw new Error("The file seems empty")
-    res.json(content[0].toString("utf-8"))
-  }))
+      const rawContent = await fileRead(filePath)
+      const content = await conf.keys.decrypt(rawContent, req.body.passphrase)
+      if (!content.length) throw new Error("The file seems empty")
+      res.json(content[0].toString("utf-8"))
+    }),
+  )
 
   return router
 }
@@ -197,22 +206,28 @@ function launchApp(conf) {
   let server
 
   if (secureServer) {
-    server = https.createServer({
-      key: fs.readFileSync(conf.key),
-      cert: fs.readFileSync(conf.cert),
-    }, app)
-  }
-  else {
+    server = https.createServer(
+      {
+        key: fs.readFileSync(conf.key),
+        cert: fs.readFileSync(conf.cert),
+      },
+      app,
+    )
+  } else {
     if (conf.address !== "localhost" && conf.address !== "127.0.0.1") {
-      log.warning("Serving on a non-local address in non-secure HTTP is highly discouraged.")
+      log.warning(
+        "Serving on a non-local address in non-secure HTTP is highly discouraged.",
+      )
     }
     server = http.createServer(app)
   }
 
-  server.listen(conf.port, conf.address, function () {
+  server.listen(conf.port, conf.address, function() {
     const address = this.address()
     const scheme = secureServer ? "https" : "http"
-    log.info(`Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`)
+    log.info(
+      `Server listening on ${scheme}://${address.address}:${address.port}${conf.urlBaseDir}`,
+    )
   })
 
   return new Promise((resolve, reject) => {
@@ -265,7 +280,8 @@ Options:
 Usage example to makes bash-compatible shells temporarily export gpg keys:
 
     pass-web -p 9082 <(gpg --export-secret-keys -a)
-`)
+`,
+  )
 }
 
 function printVersion() {
@@ -273,17 +289,16 @@ function printVersion() {
   process.stdout.write(`${pkg.name} ${pkg.version}\n`)
 }
 
-(async () => {
-
+;(async () => {
   const args = parseArgs(process.argv, {
     alias: {
-      debug:    [ "d" ],
-      store:    [ "s" ],
-      port:     [ "p" ],
-      address:  [ "a" ],
-      help:     [ "h" ],
+      debug: ["d"],
+      store: ["s"],
+      port: ["p"],
+      address: ["a"],
+      help: ["h"],
     },
-    boolean:  [ "debug" ],
+    boolean: ["debug"],
   })
 
   if (args.help) {
@@ -296,12 +311,15 @@ function printVersion() {
     return
   }
 
-  const passwordStorePath = await realpath(args.store || path.join(process.env.HOME, ".password-store"))
+  const passwordStorePath = await realpath(
+    args.store || path.join(process.env.HOME, ".password-store"),
+  )
   const passwordStoreStat = await fileStat(passwordStorePath)
-  if (!passwordStoreStat.isDirectory()) throw new Error(`${passwordStorePath} is not a directory`)
+  if (!passwordStoreStat.isDirectory())
+    throw new Error(`${passwordStorePath} is not a directory`)
 
   const keys = new Keys()
-  await Promise.all(args._.slice(2).map((key) => keys.addFromFile(key)))
+  await Promise.all(args._.slice(2).map(key => keys.addFromFile(key)))
 
   log.setLevel(args.debug ? log.DEBUG : log.INFO)
 
@@ -323,5 +341,4 @@ function printVersion() {
     htpasswd: args.htpasswd || false,
     urlBaseDir,
   })
-})()
-  .catch(log.error)
+})().catch(log.error)

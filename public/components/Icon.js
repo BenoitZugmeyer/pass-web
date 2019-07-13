@@ -9,6 +9,6 @@ const ss = base.namespace("Icon").addRules({
   },
 })
 
-export default ({ name, style, ...props}) => (
+export default ({ name, style, ...props }) => (
   <img {...props} src={`${icons}#${name}`} class={ss("root", style)} />
 )

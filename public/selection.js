@@ -1,4 +1,3 @@
-
 let copyElement
 
 export function copy(content) {
@@ -15,11 +14,9 @@ export function copy(content) {
 
   try {
     return document.execCommand("copy")
-  }
-  catch (e) {
+  } catch (e) {
     return false
-  }
-  finally {
+  } finally {
     unselect()
   }
 }

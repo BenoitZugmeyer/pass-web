@@ -6,7 +6,9 @@ const kbpgp = require("kbpgp")
 const promiseUtil = require("./promiseUtil")
 const log = require("./log")
 
-const importFromArmoredPGP = promiseUtil.wrapCPS(kbpgp.KeyManager.import_from_armored_pgp)
+const importFromArmoredPGP = promiseUtil.wrapCPS(
+  kbpgp.KeyManager.import_from_armored_pgp,
+)
 const fileRead = promiseUtil.wrapCPS(fs.readFile)
 const unbox = promiseUtil.wrapCPS(kbpgp.unbox)
 
@@ -19,13 +21,13 @@ function keyId(key) {
   else if (key.get_pgp_key_id) fullKey = key.get_pgp_key_id().toString("hex")
   else throw new KeyError("Invalid key id type")
 
-  if (!/^[0-9a-f]*$/i.test(fullKey)) throw new KeyError(`Invalid key id value ${fullKey}`)
+  if (!/^[0-9a-f]*$/i.test(fullKey))
+    throw new KeyError(`Invalid key id value ${fullKey}`)
 
   return fullKey.slice(-8).toLowerCase()
 }
 
 module.exports = class Keys {
-
   constructor() {
     this._keys = new Map()
   }
@@ -33,7 +35,7 @@ module.exports = class Keys {
   add(manager) {
     for (const id of manager.get_all_pgp_key_ids()) {
       const material = manager.find_pgp_key_material(id)
-      const emails = material.get_signed_userids().map((u) => u.get_email())
+      const emails = material.get_signed_userids().map(u => u.get_email())
       const printableEmails = emails.length ? ` (${emails.join(", ")})` : ""
 
       log.info(`Add key ${keyId(id)}${printableEmails}`)
@@ -52,14 +54,12 @@ module.exports = class Keys {
 
   verifyKey(key, passphrase) {
     const material = key.material
-    return (
-      promiseUtil.wrapCPS(material.unlock.bind(material))({ passphrase })
-        .then(() => true, () => false)
-    )
+    return promiseUtil
+      .wrapCPS(material.unlock.bind(material))({ passphrase })
+      .then(() => true, () => false)
   }
 
   decrypt(content, passphrase) {
-
     if (!passphrase) throw new Error("passphrase is required")
 
     const fetch = async (ids, opts) => {
@@ -68,7 +68,10 @@ module.exports = class Keys {
         const key = this._getById(requestId)
         if (!key) continue
 
-        if ((await this.verifyKey(key, passphrase)) && key.material.key.can_perform(opts)) {
+        if (
+          (await this.verifyKey(key, passphrase)) &&
+          key.material.key.can_perform(opts)
+        ) {
           return { manager: key.manager, index }
         }
       }
@@ -81,9 +84,10 @@ module.exports = class Keys {
       msg_type: kbpgp.const.openpgp.message_types.generic,
       keyfetch: {
         fetch(ids, opts, cb) {
-          fetch(ids, opts)
-            .then((result) => cb(null, result.manager, result.index),
-              (error) => cb(error))
+          fetch(ids, opts).then(
+            result => cb(null, result.manager, result.index),
+            error => cb(error),
+          )
         },
       },
     })
@@ -94,7 +98,9 @@ module.exports = class Keys {
   }
 
   _get(idOrEmail) {
-    return idOrEmail.indexOf("@") > 0 ? this._getByEmail(idOrEmail) : this._getById(idOrEmail)
+    return idOrEmail.indexOf("@") > 0
+      ? this._getByEmail(idOrEmail)
+      : this._getById(idOrEmail)
   }
 
   _getById(id) {
@@ -111,11 +117,8 @@ module.exports = class Keys {
   }
 
   addFromFile(filePath) {
-    return (
-      fileRead(filePath)
-        .then((armored) => importFromArmoredPGP({ armored }))
-        .then((manager) => this.add(manager))
-    )
+    return fileRead(filePath)
+      .then(armored => importFromArmoredPGP({ armored }))
+      .then(manager => this.add(manager))
   }
-
 }

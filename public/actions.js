@@ -24,14 +24,14 @@ if (process.env.NODE_ENV === "demo") {
 
   const passphrase = "demo"
   const files = {
-    "Business": {
+    Business: {
       "some-silly-business-site.com.gpg": dd`
         mypassword
         User name: mail@example.org`,
       "another-business-site.net.gpg": dd`
         somepassword`,
     },
-    "Email": {
+    Email: {
       "donenfeld.com.gpg": dd`
         emailpassword
         Address: me@donenfeld.com`,
@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "demo") {
         emailpassword
         Address: jean-michel@zx2c4.com`,
     },
-    "France": {
+    France: {
       "bank.gpg": dd`
         bankpassword
         User name: me
@@ -50,20 +50,20 @@ if (process.env.NODE_ENV === "demo") {
     },
   }
 
-  const getFiles = (root=files) => {
-    return Object.keys(root).map((name) => ({
+  const getFiles = (root = files) => {
+    return Object.keys(root).map(name => ({
       name,
       children: typeof root[name] === "object" && getFiles(root[name]),
     }))
   }
 
-  const getFileContent = (path, root=files) => {
+  const getFileContent = (path, root = files) => {
     const file = root[path[0]]
     if (path.length > 1) return getFileContent(path.slice(1), file)
     return file
   }
 
-  const error = (message) => ({ error: { message } })
+  const error = message => ({ error: { message } })
 
   const getResponse = (route, data) => {
     if (data.passphrase !== passphrase) return error("Bad passphrase")
@@ -73,15 +73,15 @@ if (process.env.NODE_ENV === "demo") {
   }
 
   request = (route, data) => Promise.resolve(getResponse(route, data))
-}
-else {
+} else {
   request = (route, data) => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest()
       xhr.addEventListener("timeout", () => reject(new Error("http timeout")))
       xhr.addEventListener("error", () => reject(new Error("http error")))
       xhr.addEventListener("load", () => {
-        if (xhr.status !== 200) reject(new Error(`Unexpected HTTP status code ${xhr.status}`))
+        if (xhr.status !== 200)
+          reject(new Error(`Unexpected HTTP status code ${xhr.status}`))
         else resolve(xhr.response)
       })
       xhr.open("POST", `api/${route}`)
@@ -93,19 +93,18 @@ else {
 }
 
 function call(route, data) {
-  return request(route, data)
-    .then((response) => {
-      if (response.error) {
-        throw Object.assign(new Error(response.error.message), response.error)
-      }
-      return response
-    })
+  return request(route, data).then(response => {
+    if (response.error) {
+      throw Object.assign(new Error(response.error.message), response.error)
+    }
+    return response
+  })
 }
 
 let fullList
 
 export function signin(passphrase) {
-  return call("list", { passphrase }).then((list) => {
+  return call("list", { passphrase }).then(list => {
     fullList = list
     store.setPassphrase(passphrase)
     store.setList(list)
@@ -122,7 +121,7 @@ export function logout() {
 }
 
 function escapeRegExp(str) {
-  return str.replace(/[-[\]\/{}()*+?.\\^$|]/g, "\\$&")  // eslint-disable-line no-useless-escape
+  return str.replace(/[-[\]\/{}()*+?.\\^$|]/g, "\\$&") // eslint-disable-line no-useless-escape
 }
 
 function filterList(list, filter) {
@@ -143,8 +142,7 @@ export function search(rawQuery) {
     const filter = new RegExp(escapeRegExp(query).replace(/\s+/g, ".*"), "i")
     const list = filterList(fullList, filter)
     store.setList(list)
-  }
-  else {
+  } else {
     store.setList(fullList)
   }
 }

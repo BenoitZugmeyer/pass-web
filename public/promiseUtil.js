@@ -1,15 +1,13 @@
-
-
 export function finally_(fn) {
   return this.then(
-    (response) => {
+    response => {
       fn()
       return response
     },
-    (error) => {
+    error => {
       fn()
       throw error
-    }
+    },
   )
 }
 

@@ -62,7 +62,7 @@ export default class App extends Component {
           <div class={ss("header")}>
             <Search
               onChange={search}
-              ref={(search) => {
+              ref={search => {
                 this.search = search
               }}
             />
@@ -72,11 +72,14 @@ export default class App extends Component {
           </div>
         )}
         {store.loggedIn && <List list={store.list} />}
-        {!store.loggedIn && <Auth ref={(auth) => {
-          this.auth = auth
-        }} />}
+        {!store.loggedIn && (
+          <Auth
+            ref={auth => {
+              this.auth = auth
+            }}
+          />
+        )}
       </div>
     )
   }
-
 }

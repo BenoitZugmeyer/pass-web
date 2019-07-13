@@ -3,7 +3,6 @@ import Icon from "./Icon"
 import { base, marginSize } from "../css"
 
 const ss = base.namespace("Search").addRules({
-
   root: {
     position: "relative",
     flex: "1",
@@ -18,8 +17,7 @@ const ss = base.namespace("Search").addRules({
     paddingRight: `calc(20px + ${marginSize})`,
   },
 
-  searchIcon: {
-  },
+  searchIcon: {},
 
   button: {
     pointerEvents: "none",
@@ -33,11 +31,9 @@ const ss = base.namespace("Search").addRules({
   buttonActive: {
     pointerEvents: "initial",
   },
-
 })
 
 export default class Search extends Component {
-
   render({ onChange }) {
     const triggerChange = () => {
       if (!onChange || !this.input) return
@@ -55,12 +51,15 @@ export default class Search extends Component {
       <div class={ss("root")}>
         <input
           class={ss("textField")}
-          ref={(el) => {
+          ref={el => {
             this.input = el
           }}
           onKeyUp={triggerChange}
         />
-        <div class={ss("button", hasValue && "buttonActive")} onClick={emptyInput}>
+        <div
+          class={ss("button", hasValue && "buttonActive")}
+          onClick={emptyInput}
+        >
           <Icon name={hasValue ? "clean" : "search"} style={ss("searchIcon")} />
         </div>
       </div>
@@ -70,5 +69,4 @@ export default class Search extends Component {
   focus() {
     this.input.focus()
   }
-
 }

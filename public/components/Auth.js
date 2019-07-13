@@ -1,5 +1,3 @@
-
-
 import { Component, h } from "preact"
 import { signin } from "../actions"
 import { stop } from "../domUtil"
@@ -7,7 +5,6 @@ import { catch_, finally_ } from "../promiseUtil"
 import { base, marginSize } from "../css"
 
 const ss = base.namespace("Auth").addRules({
-
   root: {
     textAlign: "center",
   },
@@ -22,11 +19,9 @@ const ss = base.namespace("Auth").addRules({
     inherit: "error",
     marginBottom: marginSize,
   },
-
 })
 
 export default class Auth extends Component {
-
   constructor() {
     super()
     this.state = {
@@ -38,27 +33,32 @@ export default class Auth extends Component {
     this.submit = () => {
       this.setState({ loading: true })
       signin(this.state.passphrase)
-      ::finally_(() => this.setState({ loading: false }))
-      ::catch_((error) => this.setState({ error, passphrase: "" }))
+        ::finally_(() => this.setState({ loading: false }))
+        ::catch_(error => this.setState({ error, passphrase: "" }))
     }
   }
 
-  render(props, {error, passphrase, loading}) {
+  render(props, { error, passphrase, loading }) {
     return (
       <form class={ss("root")} onSubmit={stop(this.submit)}>
         {error && <div class={ss("error")}>Error: {error.message}</div>}
         <input
           class={ss("textField")}
           type="password"
-          ref={(el) => {
+          ref={el => {
             this.input = el
           }}
-          onInput={(event) => this.setState({ passphrase: event.target.value, error: null })}
-          value={passphrase} />
+          onInput={event =>
+            this.setState({ passphrase: event.target.value, error: null })
+          }
+          value={passphrase}
+        />
         <button class={ss("button")} disabled={loading}>
           Login
         </button>
-        {process.env.NODE_ENV === "demo" && <div>Hint: the demo passphrase is &#39;demo&#39;.</div>}
+        {process.env.NODE_ENV === "demo" && (
+          <div>Hint: the demo passphrase is &#39;demo&#39;.</div>
+        )}
       </form>
     )
   }
